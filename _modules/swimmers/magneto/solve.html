@@ -1,0 +1,287 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>swimmers.magneto.solve &mdash; Swimmers 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=525cde36"></script>
+      <script src="../../../_static/doctools.js?v=888ff710"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Swimmers
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../swimmers.html">swimmers package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Swimmers</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">swimmers.magneto.solve</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for swimmers.magneto.solve</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">swimmers.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_environment</span><span class="p">,</span> <span class="n">Box</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">swimmers.magneto.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Magneto2D</span>
+
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="c1">#import matplotlib.pyplot as plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">feelpp.core</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fppc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feelpp.toolboxes.fsi</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+
+
+
+<div class="viewcode-block" id="get_center_head"><a class="viewcode-back" href="../../../swimmers/magneto/solve.html#swimmers.magneto.solve.get_center_head">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_center_head</span><span class="p">(</span><span class="n">measures</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">init_center</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the center of mass trajectory of the swimmer&#39;s head from simulation measures.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        measures (pd.DataFrame): The simulation measures DataFrame.</span>
+<span class="sd">        init_center (np.array): The initial center position of the swimmer&#39;s head.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.array: The center of mass trajectory of the swimmer&#39;s head.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">center_mass_0</span> <span class="o">=</span> <span class="n">measures</span><span class="p">[</span><span class="s2">&quot;Points_pointA_field_displacement_0&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">center_mass_1</span> <span class="o">=</span> <span class="n">measures</span><span class="p">[</span><span class="s2">&quot;Points_pointA_field_displacement_1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">center_mass_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">center_mass_0</span><span class="p">,</span> <span class="n">center_mass_1</span><span class="p">))</span>
+    <span class="n">center_mass_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">init_center</span><span class="p">[</span><span class="kc">None</span><span class="p">,:],</span><span class="n">center_mass_array</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">center_mass_array</span></div>
+
+    
+
+<div class="viewcode-block" id="get_measures"><a class="viewcode-back" href="../../../swimmers/magneto/solve.html#swimmers.magneto.solve.get_measures">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_measures</span><span class="p">(</span><span class="n">csv_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Read simulation measures from a CSV file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        csv_path (str): The path to the CSV file.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.DataFrame: The simulation measures DataFrame.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">csv_path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fd</span></div>
+
+
+<div class="viewcode-block" id="solve_magneto2D"><a class="viewcode-back" href="../../../swimmers/magneto/solve.html#swimmers.magneto.solve.solve_magneto2D">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">solve_magneto2D</span><span class="p">(</span><span class="n">magneto</span><span class="p">:</span> <span class="n">Magneto2D</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">hasContact</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">env</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Solve the 2D magneto-swimmer FSI problem using Feel++.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        magneto (Magneto2D): The magneto-swimmer object.</span>
+<span class="sd">        u (Callable): The control function for the swimmer&#39;s motion.</span>
+<span class="sd">        hasContact (bool): Flag indicating if the swimmer is in contact with the fluid.</span>
+<span class="sd">        env (str): The environment configuration.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.DataFrame: The simulation results DataFrame.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1">#res</span>
+    <span class="n">all_dicts</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># magneto swimmer planar 2D</span>
+    <span class="n">fppc</span><span class="o">.</span><span class="n">Environment</span><span class="o">.</span><span class="n">setConfigFile</span><span class="p">(</span><span class="n">magneto</span><span class="o">.</span><span class="n">path_cfg</span><span class="p">)</span>
+
+
+    <span class="n">fsi_tb</span> <span class="o">=</span> <span class="n">fsi</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">orderU</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">orderP</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">orderGeo</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">fsi_tb</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+    <span class="c1">#fsi_tb.printAndSaveInfo()</span>
+
+
+    <span class="c1">#Add Torque FSI</span>
+    <span class="n">fsi_tb</span><span class="o">.</span><span class="n">addMagnetoTorqueModelFSI</span><span class="p">()</span>
+    <span class="n">fsi_tb</span><span class="o">.</span><span class="n">addMagnetoTroqueResModelFSI</span><span class="p">()</span>
+
+    <span class="n">fsi_tb</span><span class="o">.</span><span class="n">startTimeStep</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">fsi_tb</span><span class="o">.</span><span class="n">timeStepBase</span><span class="p">()</span><span class="o">.</span><span class="n">isFinished</span><span class="p">():</span>
+ 
+        <span class="k">if</span> <span class="n">fppc</span><span class="o">.</span><span class="n">Environment</span><span class="o">.</span><span class="n">isMasterRank</span><span class="p">():</span>
+            <span class="c1"># print(&quot;============================================================\n&quot;)</span>
+            <span class="c1"># print(&quot;time simulation: {}s iteration : {}\n&quot;.format(fsi_tb.time(), fsi_tb.timeStepBase().iteration()))</span>
+            <span class="c1"># print(&quot;============================================================\n&quot;)</span>
+            <span class="k">pass</span>
+        
+
+        <span class="c1">#Update control at time t</span>
+        <span class="n">uxt</span> <span class="o">=</span> <span class="n">u</span><span class="p">(</span><span class="n">fsi_tb</span><span class="o">.</span><span class="n">time</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">uyt</span> <span class="o">=</span> <span class="n">u</span><span class="p">(</span><span class="n">fsi_tb</span><span class="o">.</span><span class="n">time</span><span class="p">())[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">uzt</span> <span class="o">=</span> <span class="n">u</span><span class="p">(</span><span class="n">fsi_tb</span><span class="o">.</span><span class="n">time</span><span class="p">())[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">fsi_tb</span><span class="o">.</span><span class="n">addParameterInModelProperties</span><span class="p">(</span><span class="s2">&quot;uxt&quot;</span><span class="p">,</span> <span class="n">uxt</span><span class="p">)</span>
+        <span class="n">fsi_tb</span><span class="o">.</span><span class="n">addParameterInModelProperties</span><span class="p">(</span><span class="s2">&quot;uyt&quot;</span><span class="p">,</span> <span class="n">uyt</span><span class="p">)</span>
+        <span class="n">fsi_tb</span><span class="o">.</span><span class="n">addParameterInModelProperties</span><span class="p">(</span><span class="s2">&quot;uzt&quot;</span><span class="p">,</span> <span class="n">uzt</span><span class="p">)</span>
+        <span class="n">fsi_tb</span><span class="o">.</span><span class="n">updateParameterValues</span><span class="p">()</span>
+
+
+        <span class="c1">#Solve FSI</span>
+        <span class="n">fsi_tb</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+
+        <span class="c1">#Export results</span>
+        <span class="n">fsi_tb</span><span class="o">.</span><span class="n">exportResults</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fsi_tb</span><span class="o">.</span><span class="n">postProcessMeasures</span><span class="p">()</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+            <span class="n">measure</span> <span class="o">=</span> <span class="n">fsi_tb</span><span class="o">.</span><span class="n">postProcessMeasures</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="n">all_dicts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">measure</span><span class="p">)</span>
+         
+        <span class="c1">#Update time : t &lt;- t+dt</span>
+        <span class="n">fsi_tb</span><span class="o">.</span><span class="n">updateTimeStep</span><span class="p">()</span>
+   
+    
+    <span class="c1">#return pd.DataFrame(all_dicts)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;/!\ Modify to take into account parallelism /!</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">get_measures</span><span class="p">(</span><span class="n">env</span> <span class="o">+</span> <span class="s2">&quot;/np_1/solid.measures/values.csv&quot;</span><span class="p">)</span></div>
+
+
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">mpi4py</span>
+    <span class="n">mpi4py</span><span class="o">.</span><span class="n">rc</span><span class="o">.</span><span class="n">thread_level</span><span class="o">=</span><span class="s2">&quot;single&quot;</span>
+
+    <span class="n">hsize_box</span> <span class="o">=</span> <span class="mf">0.001</span>
+    <span class="n">hsize_swimmer</span> <span class="o">=</span> <span class="mf">0.0005</span>
+
+    <span class="n">hfar</span> <span class="o">=</span> <span class="n">hsize_swimmer</span> <span class="o">*</span> <span class="mi">5</span>
+    <span class="n">hclose</span> <span class="o">=</span> <span class="n">hfar</span> <span class="o">/</span><span class="mf">10.</span>
+ 
+
+    <span class="n">center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">head_length_height</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0005</span><span class="p">,</span> <span class="mf">0.0015</span><span class="p">])</span>
+    <span class="n">tail_length</span> <span class="o">=</span> <span class="mf">0.0075</span>
+
+    <span class="n">rho_fluid</span> <span class="o">=</span> <span class="mi">1260</span>
+    <span class="n">mu_fluid</span> <span class="o">=</span> <span class="mf">1.52</span>
+    <span class="n">E_tail</span> <span class="o">=</span> <span class="mf">8e4</span>
+    <span class="n">nu_tail</span> <span class="o">=</span> <span class="mf">0.4</span>
+    <span class="n">rho_tail</span> <span class="o">=</span> <span class="mi">1200</span>
+    <span class="n">E_head</span>  <span class="o">=</span> <span class="mf">4.1e10</span>
+    <span class="n">nu_head</span> <span class="o">=</span> <span class="mf">0.281</span>
+    <span class="n">rho_head</span> <span class="o">=</span> <span class="mi">7000</span>
+    <span class="n">M_head</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">200000</span><span class="p">,</span> <span class="mi">200000</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+  
+    <span class="n">box</span> <span class="o">=</span> <span class="n">Box</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.04</span><span class="p">,</span><span class="mf">0.02</span><span class="p">]))</span>
+
+    <span class="n">remesh_param</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">hfar</span><span class="p">,</span> <span class="n">hclose</span><span class="p">])</span>
+
+    <span class="n">dic_fluid</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;rho&quot;</span> <span class="p">:</span> <span class="n">rho_fluid</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span> <span class="p">:</span> <span class="n">mu_fluid</span><span class="p">}</span>
+    <span class="n">dic_tail</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;E&quot;</span> <span class="p">:</span> <span class="n">E_tail</span><span class="p">,</span> <span class="s2">&quot;nu&quot;</span> <span class="p">:</span> <span class="n">nu_tail</span><span class="p">,</span> <span class="s2">&quot;rho&quot;</span> <span class="p">:</span> <span class="n">rho_tail</span><span class="p">}</span>
+    <span class="n">dic_head</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;E&quot;</span> <span class="p">:</span> <span class="n">E_head</span><span class="p">,</span> <span class="s2">&quot;nu&quot;</span> <span class="p">:</span> <span class="n">nu_head</span><span class="p">,</span> <span class="s2">&quot;rho&quot;</span> <span class="p">:</span> <span class="n">rho_head</span><span class="p">,</span> <span class="s2">&quot;M&quot;</span> <span class="p">:</span> <span class="n">M_head</span><span class="p">}</span>
+
+    <span class="n">path_geo</span> <span class="o">=</span> <span class="s2">&quot;magneto2D.geo&quot;</span>
+    <span class="n">path_json</span> <span class="o">=</span> <span class="s2">&quot;magneto2D.json&quot;</span>
+    <span class="n">path_cfg</span> <span class="o">=</span> <span class="s2">&quot;magneto2D.cfg&quot;</span>
+
+    <span class="n">dt</span> <span class="o">=</span> <span class="mf">0.01</span>
+    <span class="n">Tend</span> <span class="o">=</span> <span class="mf">0.03</span>
+    <span class="n">directory</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+
+
+    <span class="n">geo_param</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;box&quot;</span><span class="p">:</span> <span class="n">box</span><span class="p">,</span> <span class="s2">&quot;hsize_box&quot;</span><span class="p">:</span> <span class="n">hsize_box</span><span class="p">,</span> <span class="s2">&quot;hsize_swimmer&quot;</span><span class="p">:</span> <span class="n">hsize_swimmer</span><span class="p">}</span>
+    <span class="n">json_param</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fluid&quot;</span><span class="p">:</span> <span class="n">dic_fluid</span><span class="p">,</span> <span class="s2">&quot;tail&quot;</span> <span class="p">:</span> <span class="n">dic_tail</span><span class="p">,</span> <span class="s2">&quot;head&quot;</span> <span class="p">:</span> <span class="n">dic_head</span><span class="p">,</span> <span class="s2">&quot;remesh&quot;</span> <span class="p">:</span> <span class="n">remesh_param</span><span class="p">}</span>
+    <span class="n">cfg_param</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;dt&quot;</span><span class="p">:</span> <span class="n">dt</span><span class="p">,</span> <span class="s2">&quot;Tend&quot;</span><span class="p">:</span> <span class="n">Tend</span><span class="p">,</span> <span class="s2">&quot;directory&quot;</span><span class="p">:</span> <span class="n">directory</span><span class="p">}</span>
+
+
+    <span class="c1">#============== Control parameters =======================#</span>
+    <span class="n">freq</span> <span class="o">=</span> <span class="mf">0.9</span>
+    <span class="n">ux</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span> <span class="p">:</span> <span class="mf">0.005</span>
+    <span class="n">uy</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span> <span class="p">:</span> <span class="mf">0.005</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">freq</span><span class="o">*</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">uz</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span> <span class="p">:</span> <span class="mi">0</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">t</span> <span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">ux</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">uy</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">uz</span><span class="p">(</span><span class="n">t</span><span class="p">)])</span>
+    <span class="c1">#=========================================================#</span>
+    
+
+    <span class="n">magneto</span> <span class="o">=</span> <span class="n">Magneto2D</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">head_length_height</span><span class="p">,</span> <span class="n">tail_length</span><span class="p">)</span>
+    <span class="n">magneto</span><span class="o">.</span><span class="n">generate_files</span><span class="p">(</span><span class="n">path_geo</span><span class="p">,</span> <span class="n">path_json</span><span class="p">,</span> <span class="n">path_cfg</span><span class="p">,</span> <span class="n">geo_param</span><span class="p">,</span> <span class="n">json_param</span><span class="p">,</span> <span class="n">cfg_param</span><span class="p">)</span>
+    
+    <span class="n">e</span> <span class="o">=</span> <span class="n">init_environment</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">solve_magneto2D</span><span class="p">(</span><span class="n">magneto</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">get_center_head</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">center</span><span class="p">))</span>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Lucas Palazzolo.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

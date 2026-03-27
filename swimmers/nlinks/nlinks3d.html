@@ -1,0 +1,333 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>swimmers.nlinks.nlinks3d &mdash; Swimmers 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=525cde36"></script>
+      <script src="../../_static/doctools.js?v=888ff710"></script>
+      <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="swimmers.nlinks.utils" href="utils.html" />
+    <link rel="prev" title="swimmers.nlinks" href="../nlinks.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Swimmers
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../swimmers.html">swimmers package</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../../swimmers.html#swimmers-modules">swimmers modules</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../nlinks.html">swimmers.nlinks</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">swimmers.nlinks.nlinks3d</a></li>
+<li class="toctree-l4"><a class="reference internal" href="utils.html">swimmers.nlinks.utils</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../magneto.html">swimmers.magneto</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../three_sphere.html">swimmers.three_sphere</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utils.html">swimmers.utils</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Swimmers</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../swimmers.html">swimmers package</a></li>
+          <li class="breadcrumb-item"><a href="../nlinks.html">swimmers.nlinks</a></li>
+      <li class="breadcrumb-item active">swimmers.nlinks.nlinks3d</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/swimmers/nlinks/nlinks3d.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-swimmers.nlinks.nlinks3d">
+<span id="swimmers-nlinks-nlinks3d"></span><h1>swimmers.nlinks.nlinks3d<a class="headerlink" href="#module-swimmers.nlinks.nlinks3d" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="swimmers.nlinks.nlinks3d.Nlink3Dmagn_Data">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">swimmers.nlinks.nlinks3d.</span></span><span class="sig-name descname"><span class="pre">Nlink3Dmagn_Data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">l</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kLT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kLP</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kHT</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kHP</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kHR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_el</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/swimmers/nlinks/nlinks3d.html#Nlink3Dmagn_Data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#swimmers.nlinks.nlinks3d.Nlink3Dmagn_Data" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="swimmers.nlinks.nlinks3d.Nlink3Dmagn_Solver">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">swimmers.nlinks.nlinks3d.</span></span><span class="sig-name descname"><span class="pre">Nlink3Dmagn_Solver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nlink3Dmagn_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeinterp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ux</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uz</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/swimmers/nlinks/nlinks3d.html#Nlink3Dmagn_Solver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#swimmers.nlinks.nlinks3d.Nlink3Dmagn_Solver" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="swimmers.nlinks.nlinks3d.Nlink3Dmagn_Solver.print_parameters">
+<span class="sig-name descname"><span class="pre">print_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/swimmers/nlinks/nlinks3d.html#Nlink3Dmagn_Solver.print_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#swimmers.nlinks.nlinks3d.Nlink3Dmagn_Solver.print_parameters" title="Permalink to this definition"></a></dt>
+<dd><p>Print the parameters of the Nlink3Dmagn solver.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="swimmers.nlinks.nlinks3d.Nlink3Dmagn_Solver.solve">
+<span class="sig-name descname"><span class="pre">solve</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eng</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/swimmers/nlinks/nlinks3d.html#Nlink3Dmagn_Solver.solve"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#swimmers.nlinks.nlinks3d.Nlink3Dmagn_Solver.solve" title="Permalink to this definition"></a></dt>
+<dd><p>Solve the N-link 3D magnetic swimmer dynamics using MATLAB engine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>eng</strong> – MATLAB engine instance.</p></li>
+<li><p><strong>verbose</strong> (<em>bool</em>) – Boolean flag to print parameters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Time points and state vectors as NumPy arrays.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="swimmers.nlinks.nlinks3d.Nlink3Dmagn_Solver.interpolate_results">
+<span class="sig-name descname"><span class="pre">interpolate_results</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tout_interp</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/swimmers/nlinks/nlinks3d.html#Nlink3Dmagn_Solver.interpolate_results"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#swimmers.nlinks.nlinks3d.Nlink3Dmagn_Solver.interpolate_results" title="Permalink to this definition"></a></dt>
+<dd><p>Interpolate the simulation results at specified time points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tout_interp</strong> (<em>np.array</em>) – Time points for interpolation.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Interpolated time points and state vectors as NumPy arrays.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="swimmers.nlinks.nlinks3d.Nlink3Dmagn_Visualiser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">swimmers.nlinks.nlinks3d.</span></span><span class="sig-name descname"><span class="pre">Nlink3Dmagn_Visualiser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nlink3Dmagn_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/swimmers/nlinks/nlinks3d.html#Nlink3Dmagn_Visualiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#swimmers.nlinks.nlinks3d.Nlink3Dmagn_Visualiser" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="swimmers.nlinks.nlinks3d.Nlink3Dmagn_Visualiser.plot">
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'royalblue'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/swimmers/nlinks/nlinks3d.html#Nlink3Dmagn_Visualiser.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#swimmers.nlinks.nlinks3d.Nlink3Dmagn_Visualiser.plot" title="Permalink to this definition"></a></dt>
+<dd><p>Plot the N-link 3D magnetic swimmer in 3D space.
+state is dimension (2*N+6) where :
+- state[0:3] is the position of the head
+- state[3:6] is the orientation of the head (theta_x, theta_y, theta_z)
+- state[6:6+2*N] is the orientation of the link (phi^1_x, phi^1_y, phi^1_z, …, phi^N_x, phi^N_y, phi^N_z)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> (<em>np.array</em>) – State vector of the swimmer.</p></li>
+<li><p><strong>ax</strong> (<em>matplotlib.axes._subplots.Axes3DSubplot</em><em>, </em><em>optional</em>) – Matplotlib 3D axis. Defaults to None.</p></li>
+<li><p><strong>color</strong> (<em>str</em><em>, </em><em>optional</em>) – Color of the swimmer. Defaults to ‘royalblue’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The 3D axis with the swimmer plotted.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matplotlib.axes._subplots.Axes3DSubplot</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="swimmers.nlinks.nlinks3d.Nlink3Dmagn_MultipleVisualiser">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">swimmers.nlinks.nlinks3d.</span></span><span class="sig-name descname"><span class="pre">Nlink3Dmagn_MultipleVisualiser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">list_nlink3Dmagn_visualiser</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/swimmers/nlinks/nlinks3d.html#Nlink3Dmagn_MultipleVisualiser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#swimmers.nlinks.nlinks3d.Nlink3Dmagn_MultipleVisualiser" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#swimmers.nlinks.nlinks3d.Nlink3Dmagn_Visualiser" title="swimmers.nlinks.nlinks3d.Nlink3Dmagn_Visualiser"><code class="xref py py-class docutils literal notranslate"><span class="pre">Nlink3Dmagn_Visualiser</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="swimmers.nlinks.nlinks3d.Nlink3Dmagn_MultipleVisualiser.multiple_plot">
+<span class="sig-name descname"><span class="pre">multiple_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/swimmers/nlinks/nlinks3d.html#Nlink3Dmagn_MultipleVisualiser.multiple_plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#swimmers.nlinks.nlinks3d.Nlink3Dmagn_MultipleVisualiser.multiple_plot" title="Permalink to this definition"></a></dt>
+<dd><p>Plot multiple N-link 3D magnetic swimmers in 3D space.
+states is a list of state vectors, each of dimension (2*N+6)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>states</strong> (<em>List</em><em>[</em><em>np.array</em><em>]</em>) – List of state vectors of the swimmers.</p></li>
+<li><p><strong>ax</strong> (<em>matplotlib.axes._subplots.Axes3DSubplot</em><em>, </em><em>optional</em>) – Matplotlib 3D axis. Defaults to None.</p></li>
+<li><p><strong>colors</strong> (<em>list</em><em>, </em><em>optional</em>) – List of colors for the swimmers. Defaults to [].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The 3D axis with the swimmers plotted.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>matplotlib.axes._subplots.Axes3DSubplot</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="swimmers.nlinks.nlinks3d.Nlink3Dmagn_MultipleVisualiser.animate">
+<span class="sig-name descname"><span class="pre">animate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax_lims</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">view_init</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">every_frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/swimmers/nlinks/nlinks3d.html#Nlink3Dmagn_MultipleVisualiser.animate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#swimmers.nlinks.nlinks3d.Nlink3Dmagn_MultipleVisualiser.animate" title="Permalink to this definition"></a></dt>
+<dd><p>Animate multiple N-link 3D magnetic swimmers in 3D space.
+:param states: List of state vectors of the swimmers.
+:type states: List
+:param ax_lims: Axis limits for the 3D plot.
+:type ax_lims: tuple
+:param view_init: Elevation and azimuthal angles for the 3D view.
+:type view_init: tuple
+:param path: Path to save the animation. Defaults to None.
+:type path: str, optional
+:param interval: Interval between frames in milliseconds. Defaults to 100.
+:type interval: int, optional
+:param every_frame: Show every nth frame. Defaults to 1.
+:type every_frame: int, optional
+:param colors: List of colors for the swimmers. Defaults to [].
+:type colors: list, optional</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The animation object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>FuncAnimation</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="swimmers.nlinks.nlinks3d.which_link">
+<span class="sig-prename descclassname"><span class="pre">swimmers.nlinks.nlinks3d.</span></span><span class="sig-name descname"><span class="pre">which_link</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">s</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/swimmers/nlinks/nlinks3d.html#which_link"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#swimmers.nlinks.nlinks3d.which_link" title="Permalink to this definition"></a></dt>
+<dd><p>Determine which link corresponds to the index s.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s</strong> (<em>float</em>) – arc length along the links.</p></li>
+<li><p><strong>N</strong> (<em>int</em>) – number of links.</p></li>
+<li><p><strong>L</strong> (<em>float</em>) – total length the flagellum.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>index of the link corresponding to the arc length s.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="swimmers.nlinks.nlinks3d.Nlink_to_position">
+<span class="sig-prename descclassname"><span class="pre">swimmers.nlinks.nlinks3d.</span></span><span class="sig-name descname"><span class="pre">Nlink_to_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/swimmers/nlinks/nlinks3d.html#Nlink_to_position"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#swimmers.nlinks.nlinks3d.Nlink_to_position" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the position along the N-link swimmer at arc length s.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> (<em>np.array</em>) – State vector of the swimmer.</p></li>
+<li><p><strong>N</strong> (<em>int</em>) – Number of links.</p></li>
+<li><p><strong>L</strong> (<em>float</em>) – Total length of the flagellum.</p></li>
+<li><p><strong>r</strong> (<em>float</em>) – Radius of the head.</p></li>
+<li><p><strong>s</strong> (<em>float</em>) – Arc length along the links.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Position vector at arc length s.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="swimmers.nlinks.nlinks3d.Nlink_to_Mlink">
+<span class="sig-prename descclassname"><span class="pre">swimmers.nlinks.nlinks3d.</span></span><span class="sig-name descname"><span class="pre">Nlink_to_Mlink</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">L</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">state_Nlink</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">M</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/swimmers/nlinks/nlinks3d.html#Nlink_to_Mlink"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#swimmers.nlinks.nlinks3d.Nlink_to_Mlink" title="Permalink to this definition"></a></dt>
+<dd><p>Convert N-link swimmer state to M-link swimmer state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>L</strong> (<em>float</em>) – Total length of the flagellum.</p></li>
+<li><p><strong>r</strong> (<em>float</em>) – Radius of the head.</p></li>
+<li><p><strong>state_Nlink</strong> (<em>np.array</em>) – State vector of the N-link swimmer.</p></li>
+<li><p><strong>N</strong> (<em>int</em>) – Number of links in the N-link swimmer.</p></li>
+<li><p><strong>M</strong> (<em>int</em>) – Number of links in the M-link swimmer.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>State vector of the M-link swimmer.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>np.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../nlinks.html" class="btn btn-neutral float-left" title="swimmers.nlinks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="utils.html" class="btn btn-neutral float-right" title="swimmers.nlinks.utils" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Lucas Palazzolo.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

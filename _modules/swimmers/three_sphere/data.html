@@ -1,0 +1,528 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>swimmers.three_sphere.data &mdash; Swimmers 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=525cde36"></script>
+      <script src="../../../_static/doctools.js?v=888ff710"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Swimmers
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../swimmers.html">swimmers package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Swimmers</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">swimmers.three_sphere.data</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for swimmers.three_sphere.data</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">swimmers.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">Box</span>
+
+
+<div class="viewcode-block" id="ThreeSphere2D"><a class="viewcode-back" href="../../../swimmers/three_sphere/data.html#swimmers.three_sphere.data.ThreeSphere2D">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">ThreeSphere2D</span><span class="p">:</span>
+
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">radii</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">arms_length</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">,</span> <span class="n">angles</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Class that defines the 3-sphere geometry in 2D.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            center (np.array): Array with the x and y coordinates of the center of the 3-sphere geometry : [x,y]. Dimensions: (2,)</span>
+<span class="sd">            radii (np.array): Array with the radii of the 3 spheres : [radleft,radcenter, radright]. Dimensions: (3,)</span>
+<span class="sd">            arms_length (np.array): Array with the lengths of the arms that connect the spheres : [arm_left, arm_right]. Dimensions: (2,)</span>
+<span class="sd">            angles (np.array): Array with the angles (number of Pi) of the arms that connect the spheres : [angle_left, angle_right] such as theta_left = angle_left*Pi and theta_right = angle_right*Pi. Dimensions: (2,)</span>
+<span class="sd">        </span>
+<span class="sd">        Attributes:</span>
+<span class="sd">            center (np.array): Array with the x and y coordinates of the center of the 3-sphere geometry : [x,y]. Dimensions: (2,)</span>
+<span class="sd">            radii (np.array): Array with the radii of the 3 spheres : [radleft,radcenter, radright]. Dimensions: (3,)</span>
+<span class="sd">            arms_length (np.array): Array with the lengths of the arms that connect the spheres : [arm_left, arm_right]. Dimensions: (2,)</span>
+<span class="sd">            angles (np.array): Array with the angles (number of Pi) of the arms that connect the spheres : [angle_left, angle_right] such as theta_left = angle_left*Pi and theta_right = angle_right*Pi. Dimensions: (2,)</span>
+<span class="sd">            path_geo (str): Path to save the .geo file.</span>
+<span class="sd">            path_json (str): Path to save the .json file.</span>
+<span class="sd">            path_cfg (str): Path to save the .cfg file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="n">center</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">radii</span> <span class="o">=</span> <span class="n">radii</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arms_length</span> <span class="o">=</span> <span class="n">arms_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">angles</span> <span class="o">=</span> <span class="n">angles</span>
+
+<div class="viewcode-block" id="ThreeSphere2D.generate_geomesh"><a class="viewcode-back" href="../../../swimmers/three_sphere/data.html#swimmers.three_sphere.data.ThreeSphere2D.generate_geomesh">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">generate_geomesh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">box</span> <span class="p">:</span> <span class="n">Box</span><span class="p">,</span> <span class="n">hsize_box</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">hsize_swimmer</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generates the .geo file with the 3-sphere geometry in 2D.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            box (Box): Box object that defines the geometry of the domain.</span>
+<span class="sd">            hsize_box (float): Size of the mesh elements in the box.</span>
+<span class="sd">            hsize_swimmer (float): Size of the mesh elements in the 3-sphere geometry.</span>
+<span class="sd">            path (str): Path to save the .geo file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">center_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">center_y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">rad_circle_left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radii</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">rad_circle_center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radii</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">rad_circle_right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">radii</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="n">arm_length_left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arms_length</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">arm_length_right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">arms_length</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">angle_left</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">angle_right</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">angles</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">box_point_x</span> <span class="o">=</span> <span class="n">box</span><span class="o">.</span><span class="n">point</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">box_point_y</span> <span class="o">=</span> <span class="n">box</span><span class="o">.</span><span class="n">point</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">box_length_x</span> <span class="o">=</span> <span class="n">box</span><span class="o">.</span><span class="n">lengths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">box_length_y</span> <span class="o">=</span> <span class="n">box</span><span class="o">.</span><span class="n">lengths</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_geo</span> <span class="o">=</span> <span class="n">path</span>
+
+
+        <span class="n">geo_file</span> <span class="o">=</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        h = &quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">hsize_box</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;;</span>
+<span class="s2">        lcCircle = &quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">hsize_swimmer</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;;</span>
+<span class="s2">        lcDom = h;</span>
+
+<span class="s2">        // The construction of the center circle</span>
+<span class="s2">        RCircle_center = &quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rad_circle_center</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;;</span>
+<span class="s2">        Centerx = &quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">center_x</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;;</span>
+<span class="s2">        Centery = &quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">center_y</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;;</span>
+
+<span class="s2">        Point(9) = {Centerx,Centery,0,lcCircle};</span>
+<span class="s2">        Point(10) = {Centerx+RCircle_center,Centery,0,lcCircle};</span>
+<span class="s2">        Point(11) = {Centerx-RCircle_center,Centery,0,lcCircle};</span>
+<span class="s2">        Circle(7) = {10,9,11};</span>
+<span class="s2">        Circle(8) = {11,9,10};</span>
+
+<span class="s2">        // The construction of the left circle</span>
+<span class="s2">        theta_left = Pi * &quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">angle_left</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;;</span>
+<span class="s2">        RCircle_left = &quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rad_circle_left</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;;</span>
+<span class="s2">        ArmLength_left = &quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">arm_length_left</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;;</span>
+<span class="s2">        Centerx_left = Centerx + ArmLength_left*Cos(theta_left);</span>
+<span class="s2">        Centery_left = Centery + ArmLength_left*Sin(theta_left);</span>
+
+<span class="s2">        Point(1) = {Centerx_left,Centery_left,0,lcCircle};</span>
+<span class="s2">        Point(2) = {Centerx_left+RCircle_left,Centery_left,0,lcCircle};</span>
+<span class="s2">        Point(3) = {Centerx_left,RCircle_left+Centery_left,0,lcCircle};</span>
+<span class="s2">        Point(4) = {Centerx_left,-RCircle_left+Centery_left,0,lcCircle};</span>
+<span class="s2">        Circle(1) = {2,1,3};</span>
+<span class="s2">        Circle(2) = {4,1,2};</span>
+<span class="s2">        Circle(3) = {3,1,4};</span>
+
+<span class="s2">        // The construction of the right circle</span>
+<span class="s2">        theta_right = Pi * &quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">angle_right</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;;</span>
+<span class="s2">        RCircle_right = &quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">rad_circle_right</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;;</span>
+<span class="s2">        ArmLength_right = &quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">arm_length_right</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;;</span>
+<span class="s2">        Centerx_right = Centerx + ArmLength_right*Cos(theta_right);</span>
+<span class="s2">        Centery_right = Centery + ArmLength_right*Sin(theta_right);</span>
+
+<span class="s2">        Point(5) = {Centerx_right,Centery_right,0,lcCircle};</span>
+<span class="s2">        Point(6) = {Centerx_right-RCircle_right,Centery_right,0,lcCircle};</span>
+<span class="s2">        Point(7) = {Centerx_right,RCircle_right+Centery_right,0,lcCircle};</span>
+<span class="s2">        Point(8) = {Centerx_right,-RCircle_right+Centery_right,0,lcCircle};</span>
+<span class="s2">        Circle(4) = {7,5,6};</span>
+<span class="s2">        Circle(5) = {6,5,8};</span>
+<span class="s2">        Circle(6) = {8,5,7};</span>
+
+<span class="s2">        // Defining the arcs and surfaces of the three circles</span>
+<span class="s2">        Line Loop(7) = {1,2,3};</span>
+<span class="s2">        Plane Surface(8) = </span><span class="si">{7}</span><span class="s2">;</span>
+<span class="s2">        Line Loop(9) = {4,5,6};</span>
+<span class="s2">        Plane Surface(10) = </span><span class="si">{9}</span><span class="s2">;</span>
+<span class="s2">        Line Loop(11) = {7,8};</span>
+<span class="s2">        Plane Surface(11) = </span><span class="si">{11}</span><span class="s2">;</span>
+
+<span class="s2">        // Constructing the two arms linking the three spheres</span>
+<span class="s2">        Line(12) = {11, 2};</span>
+<span class="s2">        Line(13) = {10, 6};</span>
+
+<span class="s2">        // Rectangle vertices</span>
+<span class="s2">        Point(12) = {&quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">box_point_x</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;,&quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">box_point_y</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;,0,lcDom};</span>
+<span class="s2">        Point(13) = {&quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">box_point_x</span> <span class="o">+</span> <span class="n">box_length_x</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;,&quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">box_point_y</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;,0,lcDom};</span>
+<span class="s2">        Point(14) = {&quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">box_point_x</span> <span class="o">+</span> <span class="n">box_length_x</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;,&quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">box_point_y</span> <span class="o">+</span> <span class="n">box_length_y</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;,0,lcDom};</span>
+<span class="s2">        Point(15) = {&quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">box_point_x</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;,&quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">box_point_y</span> <span class="o">+</span> <span class="n">box_length_y</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;,0,lcDom};</span>
+
+<span class="s2">        // Rectangle lines</span>
+<span class="s2">        Line(16) = {12, 13};</span>
+<span class="s2">        Line(17) = {13, 14};</span>
+<span class="s2">        Line(18) = {14, 15};</span>
+<span class="s2">        Line(19) = {15, 12};</span>
+<span class="s2">        Line Loop(20) = {16,17,18,19};</span>
+
+<span class="s2">        // Defining the rectangle surface</span>
+<span class="s2">        Plane Surface(21) = {20, 7, 9, 11};</span>
+
+
+<span class="s2">        Physical Curve(&quot;CircleLeft&quot;) = {1, 3, 2};</span>
+<span class="s2">        Physical Curve(&quot;CircleCenter&quot;) = {7, 8};</span>
+<span class="s2">        Physical Curve(&quot;CircleRight&quot;) = {4, 5, 6};</span>
+<span class="s2">        Physical Curve(&quot;BoxWalls&quot;) = {16, 17, 18, 19};</span>
+
+<span class="s2">        Physical Surface(&quot;CirLeft&quot;) = </span><span class="si">{8}</span><span class="s2">;</span>
+<span class="s2">        Physical Surface(&quot;CirCenter&quot;) = </span><span class="si">{11}</span><span class="s2">;</span>
+<span class="s2">        Physical Surface(&quot;CirRight&quot;) = </span><span class="si">{10}</span><span class="s2">;</span>
+<span class="s2">        Physical Surface(&quot;Fluid&quot;) = </span><span class="si">{21}</span><span class="s2">;</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">geo_file</span><span class="p">)</span>
+            
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+    
+
+<div class="viewcode-block" id="ThreeSphere2D.generate_json"><a class="viewcode-back" href="../../../swimmers/three_sphere/data.html#swimmers.three_sphere.data.ThreeSphere2D.generate_json">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">generate_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">forceRange</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">epsBody</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">epsWall</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generates the .json file with the 3-sphere geometry in 2D.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            forceRange (float): Range of the force.</span>
+<span class="sd">            epsBody (float): Epsilon for the body.</span>
+<span class="sd">            epsWall (float): Epsilon for the wall.</span>
+<span class="sd">            path (str): Path to save the .json file.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_json</span> <span class="o">=</span> <span class="n">path</span>
+
+        <span class="n">json_file</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        {</span>
+<span class="s2">            &quot;Name&quot;: &quot;three_sphere_2D swimmer&quot;,</span>
+<span class="s2">            &quot;ShortName&quot;:&quot;three_sphere_2D swimmer&quot;,</span>
+<span class="s2">            &quot;Models&quot;:</span>
+<span class="s2">            {</span>
+<span class="s2">                &quot;fluid&quot;:</span>
+<span class="s2">                {</span>
+<span class="s2">                    &quot;materials&quot;:&quot;Fluid&quot;,</span>
+<span class="s2">                    &quot;setup&quot;:{</span>
+<span class="s2">                        &quot;equations&quot;:&quot;Stokes&quot;</span>
+<span class="s2">                    }</span>
+<span class="s2">                },</span>
+<span class="s2">                &quot;body&quot;:{</span>
+<span class="s2">                    &quot;materials&quot;:[&quot;CirLeft&quot;,&quot;CirCenter&quot;,&quot;CirRight&quot;]</span>
+<span class="s2">                }</span>
+<span class="s2">            },</span>
+<span class="s2">            &quot;Meshes&quot;:</span>
+<span class="s2">            {</span>
+<span class="s2">                &quot;fluid&quot;:</span>
+<span class="s2">                {</span>
+<span class="s2">                    &quot;Import&quot;:</span>
+<span class="s2">                    {</span>
+<span class="s2">                        &quot;filename&quot;:</span><span class="se">\&quot;</span><span class="s2">&quot;&quot;&quot;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">path_geo</span><span class="o">+</span><span class="s2">&quot;&quot;&quot;</span><span class="se">\&quot;</span><span class="s2">,</span>
+<span class="s2">                        &quot;hsize&quot;:3</span>
+<span class="s2">                    },</span>
+<span class="s2">                    &quot;MeshMotion&quot;:</span>
+<span class="s2">                    {</span>
+<span class="s2">                        &quot;ComputationalDomain&quot;:</span>
+<span class="s2">                        {</span>
+<span class="s2">                            &quot;markers&quot;:&quot;Fluid&quot;,</span>
+<span class="s2">                            &quot;method&quot;:&quot;harmonic_extension&quot;</span>
+<span class="s2">                        },</span>
+<span class="s2">                        &quot;Displacement&quot;:</span>
+<span class="s2">                        {</span>
+<span class="s2">                            &quot;Zero&quot;:[&quot;BoxWalls&quot;]</span>
+<span class="s2">                        }</span>
+<span class="s2">                    }</span>
+<span class="s2">                }</span>
+<span class="s2">            },</span>
+<span class="s2">            &quot;Materials&quot;:</span>
+<span class="s2">            {</span>
+<span class="s2">                &quot;Fluid&quot;:{</span>
+<span class="s2">                    &quot;rho&quot;:&quot;1&quot;,</span>
+<span class="s2">                    &quot;mu&quot;:&quot;1&quot;</span>
+<span class="s2">                },</span>
+<span class="s2">                &quot;CirLeft&quot;:{</span>
+<span class="s2">                    &quot;rho&quot;:1e-1</span>
+<span class="s2">                },</span>
+<span class="s2">                &quot;CirCenter&quot;:{</span>
+<span class="s2">                    &quot;rho&quot;:1e-1</span>
+<span class="s2">                },</span>
+<span class="s2">                &quot;CirRight&quot;:{</span>
+<span class="s2">                    &quot;rho&quot;:1e-1</span>
+<span class="s2">                }</span>
+<span class="s2">            },</span>
+<span class="s2">            &quot;Parameters&quot;:</span>
+<span class="s2">            {</span>
+<span class="s2">                &quot;eps&quot;:1e-10</span>
+<span class="s2">            },</span>
+<span class="s2">            &quot;BoundaryConditions&quot;:</span>
+<span class="s2">            {</span>
+<span class="s2">                &quot;fluid&quot;:</span>
+<span class="s2">                {</span>
+<span class="s2">                    &quot;velocity&quot;:</span>
+<span class="s2">                    {</span>
+<span class="s2">                        &quot;BoxWalls&quot;:</span>
+<span class="s2">                        {</span>
+<span class="s2">                            &quot;expr&quot;:&quot;{0,0}&quot;</span>
+<span class="s2">                        }</span>
+<span class="s2">                    },</span>
+<span class="s2">                    &quot;body&quot;:</span>
+<span class="s2">                    {</span>
+<span class="s2">                        &quot;CircleCenter&quot;:</span>
+<span class="s2">                        {</span>
+<span class="s2">                            &quot;markers&quot;:[&quot;CircleCenter&quot;],</span>
+<span class="s2">                            &quot;materials&quot;:</span>
+<span class="s2">                            {</span>
+<span class="s2">                                &quot;names&quot;:[&quot;CirCenter&quot;]</span>
+<span class="s2">                            }</span>
+<span class="s2">                        },</span>
+<span class="s2">                        &quot;CircleRight&quot;:</span>
+<span class="s2">                        {</span>
+<span class="s2">                            &quot;markers&quot;:[&quot;CircleRight&quot;],</span>
+<span class="s2">                            &quot;materials&quot;:</span>
+<span class="s2">                            {</span>
+<span class="s2">                                &quot;names&quot;:[&quot;CirRight&quot;]</span>
+<span class="s2">                            },</span>
+<span class="s2">                            &quot;articulation&quot;:</span>
+<span class="s2">                            {</span>
+<span class="s2">                                &quot;body&quot;:&quot;CircleCenter&quot;,</span>
+<span class="s2">                                &quot;translational-velocity&quot;:&quot;u_right:u_right&quot;</span>
+<span class="s2">                            }</span>
+<span class="s2">                        },</span>
+<span class="s2">                        &quot;CircleLeft&quot;:</span>
+<span class="s2">                        {</span>
+<span class="s2">                            &quot;markers&quot;:[&quot;CircleLeft&quot;],</span>
+<span class="s2">                            &quot;materials&quot;:</span>
+<span class="s2">                            {</span>
+<span class="s2">                                &quot;names&quot;:[&quot;CirLeft&quot;]</span>
+<span class="s2">                            },</span>
+<span class="s2">                            &quot;articulation&quot;:</span>
+<span class="s2">                            {</span>
+<span class="s2">                                &quot;body&quot;:&quot;CircleCenter&quot;,</span>
+<span class="s2">                                &quot;translational-velocity&quot;:&quot;u_left:u_left&quot;</span>
+<span class="s2">                            }</span>
+<span class="s2">                        }</span>
+<span class="s2">                    }</span>
+<span class="s2">                }</span>
+<span class="s2">            },</span>
+<span class="s2">            &quot;CollisionForce&quot;:  </span>
+<span class="s2">            {</span>
+<span class="s2">                &quot;body&quot;:</span>
+<span class="s2">                {</span>
+<span class="s2">                    &quot;setup&quot;: </span>
+<span class="s2">                    {</span>
+<span class="s2">                        &quot;model&quot;:&quot;contactAvoidance&quot;,</span>
+<span class="s2">                        &quot;type&quot;:&quot;articulatedBody&quot;, </span>
+<span class="s2">                        &quot;forceParam&quot;:</span>
+<span class="s2">                        {</span>
+<span class="s2">                            &quot;forceRange&quot;:&quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">forceRange</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;, </span>
+<span class="s2">                            &quot;epsBody&quot;: &quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">epsBody</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;,</span>
+<span class="s2">                            &quot;epsWall&quot;: &quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">epsWall</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                        }</span>
+<span class="s2">                    }</span>
+<span class="s2">                }</span>
+<span class="s2">            },</span>
+<span class="s2">            &quot;PostProcess&quot;:</span>
+<span class="s2">            {</span>
+<span class="s2">                &quot;fluid&quot;:</span>
+<span class="s2">                {</span>
+<span class="s2">                    &quot;Exports&quot;:</span>
+<span class="s2">                    {</span>
+<span class="s2">                        &quot;fields&quot;:[&quot;velocity&quot;,&quot;pressure&quot;,&quot;pid&quot;,&quot;displacement&quot;]</span>
+<span class="s2">                    },</span>
+<span class="s2">                    &quot;Measures&quot;:</span>
+<span class="s2">                    {</span>
+<span class="s2">                        &quot;Quantities&quot;:</span>
+<span class="s2">                        {</span>
+<span class="s2">                            &quot;names&quot;:&quot;all&quot;</span>
+<span class="s2">                        },</span>
+<span class="s2">                        &quot;Forces&quot;:[&quot;CircleCenter&quot;,&quot;CircleLeft&quot;,&quot;CircleRight&quot;]</span>
+<span class="s2">                    }</span>
+<span class="s2">                }</span>
+<span class="s2">            }</span>
+<span class="s2">        }</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span></div>
+    
+
+<div class="viewcode-block" id="ThreeSphere2D.generate_cfg"><a class="viewcode-back" href="../../../swimmers/three_sphere/data.html#swimmers.three_sphere.data.ThreeSphere2D.generate_cfg">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">generate_cfg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">Tend</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generates the .cfg file with the 3-sphere geometry in 2D.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            directory (str): Directory where the results will be saved.</span>
+<span class="sd">            dt (float): Time step.</span>
+<span class="sd">            Tend (float): Final time.</span>
+<span class="sd">            path (str): Path to save the .cfg file.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">path_cfg</span> <span class="o">=</span> <span class="n">path</span>
+
+        <span class="n">cfg_file</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        directory=&quot;&quot;&quot;</span> <span class="o">+</span> <span class="n">directory</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
+
+<span class="s2">        case.dimension=2</span>
+
+<span class="s2">        [fluid]</span>
+<span class="s2">        exporter.use-static-mesh=0</span>
+<span class="s2">        filename= &quot;&quot;&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">path_json</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        #solver=Oseen #Oseen,Picard,Newton</span>
+<span class="s2">        solver=Oseen#Newton</span>
+<span class="s2">        ksp-monitor=false</span>
+<span class="s2">        pc-type=lu</span>
+<span class="s2">        ksp-type=preonly</span>
+<span class="s2">        #reuse-prec=1</span>
+<span class="s2">        ksp-maxit-reuse=20</span>
+<span class="s2">        snes-monitor=true</span>
+<span class="s2">        snes-maxit=100</span>
+<span class="s2">        define-pressure-cst=true</span>
+<span class="s2">        #define-pressure-cst.method=lagrange-multiplier#algebraic</span>
+<span class="s2">        verbose_solvertimer=0</span>
+
+<span class="s2">        #body.articulation.method=p-matrix</span>
+
+<span class="s2">        [fluid.alemesh]</span>
+<span class="s2">        pc-type=lu</span>
+<span class="s2">        [fluid.bdf]</span>
+<span class="s2">        order=2</span>
+
+<span class="s2">        [ts]</span>
+<span class="s2">        time-step= &quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        time-final= &quot;&quot;&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">Tend</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        restart.at-last-save=true</span>
+<span class="s2">        time-initial=0</span>
+
+<span class="s2">        [exporter]</span>
+<span class="s2">        freq=1</span>
+<span class="s2">        &quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">cfg_file</span><span class="p">)</span></div>
+    
+
+<div class="viewcode-block" id="ThreeSphere2D.generate_files"><a class="viewcode-back" href="../../../swimmers/three_sphere/data.html#swimmers.three_sphere.data.ThreeSphere2D.generate_files">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">generate_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path_geo</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path_json</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">path_cfg</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">geo_param</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">json_param</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">cfg_param</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generates the .geo, .json and .cfg files with the 3-sphere geometry in 2D.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            path_geo (str): Path to save the .geo file.</span>
+<span class="sd">            path_json (str): Path to save the .json file.</span>
+<span class="sd">            path_cfg (str): Path to save the .cfg file.</span>
+<span class="sd">            geo_param (dict): Dictionary with the parameters to generate the .geo file.</span>
+<span class="sd">            json_param (dict): Dictionary with the parameters to generate the .json file.</span>
+<span class="sd">            cfg_param (dict): Dictionary with the parameters to generate the .cfg file.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">box</span> <span class="o">=</span> <span class="n">geo_param</span><span class="p">[</span><span class="s2">&quot;box&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hsize_box</span> <span class="o">=</span> <span class="n">geo_param</span><span class="p">[</span><span class="s2">&quot;hsize_box&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hsize_swimmer</span> <span class="o">=</span> <span class="n">geo_param</span><span class="p">[</span><span class="s2">&quot;hsize_swimmer&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">forceRange</span> <span class="o">=</span> <span class="n">json_param</span><span class="p">[</span><span class="s2">&quot;forceRange&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epsBody</span> <span class="o">=</span> <span class="n">json_param</span><span class="p">[</span><span class="s2">&quot;epsBody&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epsWall</span> <span class="o">=</span> <span class="n">json_param</span><span class="p">[</span><span class="s2">&quot;epsWall&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dt</span> <span class="o">=</span> <span class="n">cfg_param</span><span class="p">[</span><span class="s2">&quot;dt&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Tend</span> <span class="o">=</span> <span class="n">cfg_param</span><span class="p">[</span><span class="s2">&quot;Tend&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">directory</span> <span class="o">=</span> <span class="n">cfg_param</span><span class="p">[</span><span class="s2">&quot;directory&quot;</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">generate_geomesh</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">box</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hsize_box</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hsize_swimmer</span><span class="p">,</span> <span class="n">path_geo</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generate_json</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forceRange</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsBody</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">epsWall</span><span class="p">,</span> <span class="n">path_json</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">generate_cfg</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directory</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">Tend</span><span class="p">,</span> <span class="n">path_cfg</span><span class="p">)</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Files generated successfully!&quot;</span><span class="p">)</span>
+
+
+        <span class="k">return</span> <span class="kc">None</span></div></div>
+
+
+
+
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Lucas Palazzolo.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

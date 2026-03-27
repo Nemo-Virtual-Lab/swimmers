@@ -1,0 +1,352 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>swimmers.three_sphere.solve &mdash; Swimmers 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=525cde36"></script>
+      <script src="../../../_static/doctools.js?v=888ff710"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Swimmers
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../swimmers.html">swimmers package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Swimmers</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">swimmers.three_sphere.solve</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for swimmers.three_sphere.solve</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">swimmers.three_sphere.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThreeSphere2D</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">swimmers.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_environment</span><span class="p">,</span> <span class="n">Box</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">feelpp.core</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fppc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">feelpp.core.quality</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">q</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">feelpp.toolboxes.fluid</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+
+
+<div class="viewcode-block" id="get_center_mass"><a class="viewcode-back" href="../../../swimmers/three_sphere/solve.html#swimmers.three_sphere.solve.get_center_mass">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_center_mass</span><span class="p">(</span><span class="n">measures</span><span class="p">,</span> <span class="n">init_center</span><span class="p">)</span> <span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the center of mass trajectory of the swimmer&#39;s center sphere from simulation measures.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        measures (pd.DataFrame): The simulation measures DataFrame.</span>
+<span class="sd">        init_center (np.array): The initial center position of the swimmer&#39;s center sphere.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.array: The center of mass trajectory of the swimmer&#39;s center sphere.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">center_mass_0</span> <span class="o">=</span> <span class="n">measures</span><span class="p">[</span><span class="s2">&quot;Quantities_body_CircleCenter.mass_center_0&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">center_mass_1</span> <span class="o">=</span> <span class="n">measures</span><span class="p">[</span><span class="s2">&quot;Quantities_body_CircleCenter.mass_center_1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">center_mass_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">center_mass_0</span><span class="p">,</span> <span class="n">center_mass_1</span><span class="p">))</span>
+    <span class="n">center_mass_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">init_center</span><span class="p">[</span><span class="kc">None</span><span class="p">,:],</span><span class="n">center_mass_array</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">center_mass_array</span></div>
+
+<div class="viewcode-block" id="get_center_mass_left"><a class="viewcode-back" href="../../../swimmers/three_sphere/solve.html#swimmers.three_sphere.solve.get_center_mass_left">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_center_mass_left</span><span class="p">(</span><span class="n">measures</span><span class="p">,</span> <span class="n">init_center</span><span class="p">)</span> <span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the center of mass trajectory of the swimmer&#39;s left sphere from simulation measures.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        measures (pd.DataFrame): The simulation measures DataFrame.</span>
+<span class="sd">        init_center (np.array): The initial center position of the swimmer&#39;s left sphere.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.array: The center of mass trajectory of the swimmer&#39;s left sphere.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">center_mass_0</span> <span class="o">=</span> <span class="n">measures</span><span class="p">[</span><span class="s2">&quot;Quantities_body_CircleLeft.mass_center_0&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">center_mass_1</span> <span class="o">=</span> <span class="n">measures</span><span class="p">[</span><span class="s2">&quot;Quantities_body_CircleLeft.mass_center_1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">center_mass_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">center_mass_0</span><span class="p">,</span> <span class="n">center_mass_1</span><span class="p">))</span>
+    <span class="n">center_mass_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">init_center</span><span class="p">[</span><span class="kc">None</span><span class="p">,:],</span><span class="n">center_mass_array</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">center_mass_array</span></div>
+
+<div class="viewcode-block" id="get_center_mass_right"><a class="viewcode-back" href="../../../swimmers/three_sphere/solve.html#swimmers.three_sphere.solve.get_center_mass_right">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_center_mass_right</span><span class="p">(</span><span class="n">measures</span><span class="p">,</span> <span class="n">init_center</span><span class="p">)</span> <span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the center of mass trajectory of the swimmer&#39;s right sphere from simulation measures.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        measures (pd.DataFrame): The simulation measures DataFrame.</span>
+<span class="sd">        init_center (np.array): The initial center position of the swimmer&#39;s right sphere.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.array: The center of mass trajectory of the swimmer&#39;s right sphere.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">center_mass_0</span> <span class="o">=</span> <span class="n">measures</span><span class="p">[</span><span class="s2">&quot;Quantities_body_CircleRight.mass_center_0&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">center_mass_1</span> <span class="o">=</span> <span class="n">measures</span><span class="p">[</span><span class="s2">&quot;Quantities_body_CircleRight.mass_center_1&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">center_mass_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span><span class="n">center_mass_0</span><span class="p">,</span> <span class="n">center_mass_1</span><span class="p">))</span>
+    <span class="n">center_mass_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">init_center</span><span class="p">[</span><span class="kc">None</span><span class="p">,:],</span> <span class="n">center_mass_array</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">center_mass_array</span></div>
+
+<div class="viewcode-block" id="get_angle"><a class="viewcode-back" href="../../../swimmers/three_sphere/solve.html#swimmers.three_sphere.solve.get_angle">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">get_angle</span><span class="p">(</span><span class="n">measures</span><span class="p">,</span> <span class="n">init_angle</span><span class="p">)</span> <span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extract the rotation angle trajectory of the swimmer&#39;s center sphere from simulation measures.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        measures (pd.DataFrame): The simulation measures DataFrame.</span>
+<span class="sd">        init_angle (float): The initial rotation angle of the swimmer&#39;s center sphere.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.array: The rotation angle trajectory of the swimmer&#39;s center sphere.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">angle_0</span> <span class="o">=</span> <span class="n">measures</span><span class="p">[</span><span class="s2">&quot;Quantities_nba_articulation_CircleCenter.rigid_rotation_angles&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+    <span class="n">angle_array</span> <span class="o">=</span> <span class="n">angle_0</span>
+    <span class="n">angle_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">init_angle</span><span class="p">]),</span> <span class="n">angle_array</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">angle_array</span></div>
+
+
+
+
+
+
+<div class="viewcode-block" id="solve_three_sphere2D"><a class="viewcode-back" href="../../../swimmers/three_sphere/solve.html#swimmers.three_sphere.solve.solve_three_sphere2D">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">solve_three_sphere2D</span><span class="p">(</span><span class="n">three_sphere</span><span class="p">:</span> <span class="n">ThreeSphere2D</span><span class="p">,</span> <span class="n">u</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">hasContact</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Solve the 2D three-sphere swimmer FSI problem using Feel++.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        three_sphere (ThreeSphere2D): The three-sphere swimmer object.</span>
+<span class="sd">        u (Callable): The control function for the swimmer&#39;s motion.</span>
+<span class="sd">        hasContact (bool): Flag indicating if the swimmer is in contact with the fluid.</span>
+<span class="sd">        </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        pd.DataFrame: The simulation results DataFrame.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1">#res</span>
+    <span class="n">all_dicts</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Three sphere swimmer planar 2D</span>
+    <span class="n">fppc</span><span class="o">.</span><span class="n">Environment</span><span class="o">.</span><span class="n">setConfigFile</span><span class="p">(</span><span class="n">three_sphere</span><span class="o">.</span><span class="n">path_cfg</span><span class="p">)</span>
+
+
+    <span class="n">f</span> <span class="o">=</span> <span class="n">fluid</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">orderVelocity</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">orderPressure</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+    <span class="c1">#f.printAndSaveInfo()</span>
+
+
+    <span class="c1"># Three sphere swimmer planar 2D</span>
+    <span class="n">hfar</span> <span class="o">=</span>  <span class="mf">1.0</span>
+    <span class="n">hclose</span> <span class="o">=</span> <span class="n">three_sphere</span><span class="o">.</span><span class="n">hsize_swimmer</span>
+    <span class="n">cst</span> <span class="o">=</span> <span class="mf">0.</span>
+
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">remesh_toolbox</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">hclose</span><span class="p">,</span> <span class="n">hfar</span><span class="p">,</span> <span class="n">parent_mesh</span><span class="p">,</span> <span class="n">cst</span><span class="p">):</span>
+        <span class="c1"># 3 spheres</span>
+        <span class="n">required_facets</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CircleLeft&quot;</span><span class="p">,</span><span class="s2">&quot;CircleCenter&quot;</span><span class="p">,</span><span class="s2">&quot;CircleRight&quot;</span><span class="p">]</span>
+        <span class="n">required_elts</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;CirLeft&quot;</span><span class="p">,</span><span class="s2">&quot;CirCenter&quot;</span><span class="p">,</span><span class="s2">&quot;CirRight&quot;</span><span class="p">]</span>
+    
+
+        <span class="n">n_required_elts_before</span><span class="o">=</span><span class="n">fppc</span><span class="o">.</span><span class="n">nelements</span><span class="p">(</span><span class="n">fppc</span><span class="o">.</span><span class="n">markedelements</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">mesh</span><span class="p">(),</span><span class="n">required_elts</span><span class="p">))</span>
+        <span class="n">n_required_facets_before</span><span class="o">=</span><span class="n">fppc</span><span class="o">.</span><span class="n">nelements</span><span class="p">(</span><span class="n">fppc</span><span class="o">.</span><span class="n">markedfaces</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">mesh</span><span class="p">(),</span><span class="n">required_facets</span><span class="p">))</span>
+        <span class="c1">#print(&quot; . [before remesh]   n required elts: {}&quot;.format(n_required_elts_before))</span>
+        <span class="c1">#print(&quot; . [before remesh] n required facets: {}&quot;.format(n_required_facets_before))</span>
+
+        <span class="n">new_mesh</span><span class="p">,</span> <span class="n">cpt</span> <span class="o">=</span> <span class="n">fppc</span><span class="o">.</span><span class="n">remesh</span><span class="p">(</span>
+            <span class="n">mesh</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">mesh</span><span class="p">(),</span> <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;gradedls(</span><span class="si">{}</span><span class="s2">,</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hclose</span><span class="p">,</span> <span class="n">hfar</span><span class="p">),</span> <span class="n">required_elts</span><span class="o">=</span><span class="n">required_elts</span><span class="p">,</span> <span class="n">required_facets</span><span class="o">=</span><span class="n">required_facets</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="s1">&#39;{&quot;remesh&quot;:{ &quot;verbose&quot;:-1}}&#39;</span><span class="p">)</span>
+        
+        <span class="c1">#print(&quot; . [after remesh]  n remeshes: {}&quot;.format(cpt))</span>
+        <span class="n">n_required_elts_after</span><span class="o">=</span><span class="n">fppc</span><span class="o">.</span><span class="n">nelements</span><span class="p">(</span><span class="n">fppc</span><span class="o">.</span><span class="n">markedelements</span><span class="p">(</span><span class="n">new_mesh</span><span class="p">,</span><span class="n">required_elts</span><span class="p">))</span>
+        <span class="n">n_required_facets_after</span><span class="o">=</span><span class="n">fppc</span><span class="o">.</span><span class="n">nelements</span><span class="p">(</span><span class="n">fppc</span><span class="o">.</span><span class="n">markedfaces</span><span class="p">(</span><span class="n">new_mesh</span><span class="p">,</span><span class="n">required_facets</span><span class="p">))</span>
+        <span class="c1">#print(&quot; . [after remesh]  n required elts: {}&quot;.format(n_required_elts_after))</span>
+        <span class="c1">#print(&quot; . [after remesh] n required facets: {}&quot;.format(n_required_facets_after))</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">applyRemesh</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">mesh</span><span class="p">(),</span><span class="n">new_mesh</span><span class="p">)</span>
+
+
+    <span class="n">parent_mesh</span><span class="o">=</span><span class="n">f</span><span class="o">.</span><span class="n">mesh</span><span class="p">()</span>
+    <span class="n">remesh_toolbox</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">hclose</span><span class="p">,</span> <span class="n">hfar</span><span class="p">,</span> <span class="kc">None</span> <span class="p">,</span> <span class="n">cst</span><span class="p">)</span>
+    <span class="c1">#f.exportResults()</span>
+
+
+    <span class="n">nbr_remesh</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">time_remesh</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Reset execution time parameters</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">reset_executionTime</span><span class="p">()</span>
+
+    <span class="c1">#Add collision force </span>
+    <span class="k">if</span> <span class="n">hasContact</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">addContactForceModel</span><span class="p">()</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">addContactForceResModel</span><span class="p">()</span>
+
+    <span class="n">f</span><span class="o">.</span><span class="n">startTimeStep</span><span class="p">()</span>
+
+    <span class="k">while</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">timeStepBase</span><span class="p">()</span><span class="o">.</span><span class="n">isFinished</span><span class="p">():</span>
+
+        
+        <span class="n">min_etaq</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">etaQ</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">mesh</span><span class="p">())</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">min_etaq</span> <span class="o">&lt;</span> <span class="mf">0.6</span><span class="p">:</span>
+            <span class="n">remesh_toolbox</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">hclose</span><span class="p">,</span> <span class="n">hfar</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">cst</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">hasContact</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">addContactForceModel</span><span class="p">()</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">addContactForceResModel</span><span class="p">()</span>
+
+
+            <span class="n">nbr_remesh</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">time_remesh</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+        
+    
+        <span class="k">if</span> <span class="n">fppc</span><span class="o">.</span><span class="n">Environment</span><span class="o">.</span><span class="n">isMasterRank</span><span class="p">():</span>
+            <span class="c1">#print(&quot;============================================================\n&quot;)</span>
+            <span class="c1">#print(&quot;time simulation: {}s iteration : {}\n&quot;.format(f.time(), f.timeStepBase().iteration()))</span>
+            <span class="c1">#print(&quot;  -- mesh quality: {}s\n&quot;.format(min_etaq))</span>
+            <span class="c1">#print(&quot;============================================================\n&quot;)</span>
+            <span class="k">pass</span>
+
+        
+        <span class="n">u_value</span> <span class="o">=</span> <span class="n">u</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">time</span><span class="p">())</span> <span class="c1">#u(t)=[u1(t), u2(t)]</span>
+        <span class="n">u_left</span> <span class="o">=</span> <span class="n">u_value</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1">#u_left = u1(t)</span>
+        <span class="n">u_right</span> <span class="o">=</span> <span class="n">u_value</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c1">#u_right = u2(t)</span>
+        
+        <span class="n">f</span><span class="o">.</span><span class="n">addParameterInModelProperties</span><span class="p">(</span><span class="s2">&quot;u_left&quot;</span><span class="p">,</span> <span class="n">u_left</span><span class="p">)</span> <span class="c1">#modifier paramètres dans le json</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">addParameterInModelProperties</span><span class="p">(</span><span class="s2">&quot;u_right&quot;</span><span class="p">,</span><span class="n">u_right</span><span class="p">)</span> <span class="c1">#modifier paramètres dans le json</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">updateParameterValues</span><span class="p">()</span> <span class="c1">#mise à jour des paramètres</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">solve</span><span class="p">()</span>
+        
+        <span class="n">f</span><span class="o">.</span><span class="n">exportResults</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">postProcessMeasures</span><span class="p">()</span><span class="o">.</span><span class="n">empty</span><span class="p">():</span>
+            <span class="n">measure</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">postProcessMeasures</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="n">all_dicts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">measure</span><span class="p">)</span>
+            <span class="c1">#print(f&quot;measure = {measure}&quot;)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">updateTimeStep</span><span class="p">()</span> <span class="c1">#t = t+dt</span>
+    
+    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">all_dicts</span><span class="p">)</span></div>
+
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">mpi4py</span>
+    <span class="n">mpi4py</span><span class="o">.</span><span class="n">rc</span><span class="o">.</span><span class="n">thread_level</span><span class="o">=</span><span class="s2">&quot;single&quot;</span>
+
+    <span class="c1"># ============ Geometrical parameters</span>
+    <span class="n">center</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+    <span class="n">radii</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.125</span><span class="p">,</span><span class="mf">0.125</span><span class="p">,</span><span class="mf">0.125</span><span class="p">])</span>
+    <span class="n">arms_length</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">10</span><span class="o">*</span><span class="mf">0.125</span><span class="p">,</span><span class="mi">10</span><span class="o">*</span><span class="mf">0.125</span><span class="p">])</span>
+    <span class="n">angles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+
+    <span class="n">hsize_box</span> <span class="o">=</span> <span class="mf">0.5</span>
+    <span class="n">hsize_swimmer</span> <span class="o">=</span> <span class="mf">0.06</span>
+    <span class="n">box</span> <span class="o">=</span> <span class="n">Box</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span><span class="mi">6</span><span class="p">]))</span>
+
+    <span class="n">path_geo</span> <span class="o">=</span> <span class="s2">&quot;three_sphere_2D.geo&quot;</span>
+    <span class="n">path_json</span> <span class="o">=</span> <span class="s2">&quot;three_sphere_2D.json&quot;</span>
+    <span class="n">path_cfg</span> <span class="o">=</span> <span class="s2">&quot;three_sphere_2D.cfg&quot;</span>
+    <span class="n">dt</span> <span class="o">=</span> <span class="mf">0.05</span>
+    <span class="n">Tend</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">directory</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span>
+
+    <span class="n">geo_param</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;box&quot;</span><span class="p">:</span> <span class="n">box</span><span class="p">,</span> <span class="s2">&quot;hsize_box&quot;</span><span class="p">:</span> <span class="n">hsize_box</span><span class="p">,</span> <span class="s2">&quot;hsize_swimmer&quot;</span><span class="p">:</span> <span class="n">hsize_swimmer</span><span class="p">}</span>
+    <span class="n">json_param</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;forceRange&quot;</span><span class="p">:</span> <span class="n">hsize_swimmer</span><span class="p">,</span> <span class="s2">&quot;epsBody&quot;</span><span class="p">:</span> <span class="mf">0.00000005</span><span class="p">,</span> <span class="s2">&quot;epsWall&quot;</span><span class="p">:</span> <span class="mf">0.00000005</span><span class="p">}</span>
+    <span class="n">cfg_param</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;dt&quot;</span><span class="p">:</span> <span class="n">dt</span><span class="p">,</span> <span class="s2">&quot;Tend&quot;</span><span class="p">:</span> <span class="n">Tend</span><span class="p">,</span> <span class="s2">&quot;directory&quot;</span><span class="p">:</span> <span class="n">directory</span><span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">u</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="p">:</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">pulse</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">):</span>
+            <span class="c1"># pulse(t, t0, t1) = 1 if t0+ &lt;= t &lt;= t1 else 0 </span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">t0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">heaviside</span><span class="p">(</span><span class="n">t</span><span class="o">-</span><span class="n">t1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        
+        <span class="k">def</span><span class="w"> </span><span class="nf">periodic_pulse</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+            <span class="n">t_mod</span> <span class="o">=</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">t0</span><span class="p">)</span> <span class="o">%</span> <span class="n">T</span> <span class="o">+</span> <span class="n">t0</span>
+            <span class="k">return</span> <span class="n">pulse</span><span class="p">(</span><span class="n">t_mod</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">t1</span><span class="p">)</span>
+        
+        <span class="n">u_left</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="p">(</span> <span class="n">periodic_pulse</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">-</span> <span class="n">periodic_pulse</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="p">)</span>
+        <span class="n">u_right</span> <span class="o">=</span> <span class="mf">0.4</span> <span class="o">*</span> <span class="p">(</span> <span class="n">periodic_pulse</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">-</span> <span class="n">periodic_pulse</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">u_left</span><span class="p">,</span> <span class="n">u_right</span><span class="p">])</span>
+  
+
+    <span class="n">three_sphere</span> <span class="o">=</span> <span class="n">ThreeSphere2D</span><span class="p">(</span><span class="n">center</span><span class="p">,</span> <span class="n">radii</span><span class="p">,</span> <span class="n">arms_length</span><span class="p">,</span> <span class="n">angles</span><span class="p">)</span>
+    <span class="n">three_sphere</span><span class="o">.</span><span class="n">generate_files</span><span class="p">(</span><span class="n">path_geo</span><span class="p">,</span> <span class="n">path_json</span><span class="p">,</span> <span class="n">path_cfg</span><span class="p">,</span> <span class="n">geo_param</span><span class="p">,</span> <span class="n">json_param</span><span class="p">,</span> <span class="n">cfg_param</span><span class="p">)</span>
+    
+    <span class="n">e</span> <span class="o">=</span> <span class="n">init_environment</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">solve_three_sphere2D</span><span class="p">(</span><span class="n">three_sphere</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">get_center_mass</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">three_sphere</span><span class="o">.</span><span class="n">center</span><span class="p">))</span>
+  
+
+    
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Lucas Palazzolo.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

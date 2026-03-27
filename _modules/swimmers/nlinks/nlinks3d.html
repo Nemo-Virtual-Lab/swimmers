@@ -1,0 +1,519 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>swimmers.nlinks.nlinks3d &mdash; Swimmers 0.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=525cde36"></script>
+      <script src="../../../_static/doctools.js?v=888ff710"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Swimmers
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../swimmers.html">swimmers package</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Swimmers</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">swimmers.nlinks.nlinks3d</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for swimmers.nlinks.nlinks3d</h1><div class="highlight"><pre>
+<span></span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.animation</span><span class="w"> </span><span class="kn">import</span> <span class="n">FuncAnimation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.interpolate</span><span class="w"> </span><span class="kn">import</span> <span class="n">interp1d</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matlab</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">swimmers.nlinks.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">numpy_to_matlab_double</span><span class="p">,</span> <span class="n">rotation_x</span><span class="p">,</span> <span class="n">rotation_y</span><span class="p">,</span> <span class="n">rotation_z</span><span class="p">,</span> <span class="n">vector_to_euler_angles</span>
+
+
+
+
+<div class="viewcode-block" id="Nlink3Dmagn_Data"><a class="viewcode-back" href="../../../swimmers/nlinks/nlinks3d.html#swimmers.nlinks.nlinks3d.Nlink3Dmagn_Data">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Nlink3Dmagn_Data</span> <span class="p">:</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">l</span><span class="p">,</span> <span class="n">kLT</span><span class="p">,</span> <span class="n">kLP</span><span class="p">,</span> <span class="n">kHT</span><span class="p">,</span> <span class="n">kHP</span><span class="p">,</span> <span class="n">kHR</span><span class="p">,</span> <span class="n">k_el</span><span class="p">,</span> <span class="n">M</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Data class for N-link 3D magnetic swimmer parameters.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            N (int): Number of links.</span>
+<span class="sd">            r (float): Radius of the head.</span>
+<span class="sd">            l (float): Length of each link.</span>
+<span class="sd">            kLT (float): Tengential tail RFT coefficient.</span>
+<span class="sd">            kLP (float): Perpendicular tail RFT coefficient.</span>
+<span class="sd">            kHT (float): Tengential head RFT coefficient.</span>
+<span class="sd">            kHP (float): Perpendicular head RFT coefficient.</span>
+<span class="sd">            kHR (float): Rotational head RFT coefficient.</span>
+<span class="sd">            k_el (float): Elastic constant.</span>
+<span class="sd">            M (float): Magnetization.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="n">N</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">l</span> <span class="o">=</span> <span class="n">l</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kLT</span> <span class="o">=</span> <span class="n">kLT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kLP</span> <span class="o">=</span> <span class="n">kLP</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kHT</span> <span class="o">=</span> <span class="n">kHT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kHP</span> <span class="o">=</span> <span class="n">kHP</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kHR</span> <span class="o">=</span> <span class="n">kHR</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k_el</span> <span class="o">=</span> <span class="n">k_el</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">M</span> <span class="o">=</span> <span class="n">M</span></div>
+    
+
+
+<div class="viewcode-block" id="Nlink3Dmagn_Solver"><a class="viewcode-back" href="../../../swimmers/nlinks/nlinks3d.html#swimmers.nlinks.nlinks3d.Nlink3Dmagn_Solver">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Nlink3Dmagn_Solver</span><span class="p">:</span> 
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nlink3Dmagn_data</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">z0</span><span class="p">,</span> <span class="n">timeinterp</span><span class="p">,</span> <span class="n">ux</span><span class="p">,</span> <span class="n">uy</span><span class="p">,</span> <span class="n">uz</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Solver class for N-link 3D magnetic swimmer dynamics.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            nlink3Dmagn_data (Nlink3Dmagn_Data): Data object containing swimmer parameters.</span>
+<span class="sd">            t0 (float): Initial time.</span>
+<span class="sd">            tf (float): Final time.</span>
+<span class="sd">            z0 (np.array): Initial state vector.</span>
+<span class="sd">            timeinterp (np.array): Time points for interpolation of magnetic field.</span>
+<span class="sd">            ux (np.array): Control input in x-direction.</span>
+<span class="sd">            uy (np.array): Control input in y-direction.</span>
+<span class="sd">            uz (np.array): Control input in z-direction.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">N</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">r</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">l</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">l</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kLT</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">kLT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kLP</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">kLP</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kHT</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">kHT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kHP</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">kHP</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kHR</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">kHR</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k_el</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">k_el</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">M</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">M</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">t0</span> <span class="o">=</span> <span class="n">t0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tf</span> <span class="o">=</span> <span class="n">tf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z0</span> <span class="o">=</span> <span class="n">z0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeinterp</span> <span class="o">=</span> <span class="n">timeinterp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ux</span> <span class="o">=</span> <span class="n">ux</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uy</span> <span class="o">=</span> <span class="n">uy</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uz</span> <span class="o">=</span> <span class="n">uz</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tout</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zout</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tout_interp</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zout_interp</span> <span class="o">=</span> <span class="kc">None</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">paramms</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;l&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;kLT&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kLT</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;kLP&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kLP</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;kHT&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kHT</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;kHP&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kHP</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;kHR&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kHR</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;k_el&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_el</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;M&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;t0&quot;</span><span class="p">,</span> <span class="n">t0</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;tf&quot;</span><span class="p">,</span> <span class="n">tf</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;z0&quot;</span><span class="p">,</span> <span class="n">z0</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;timeinterp.shape&quot;</span><span class="p">,</span> <span class="n">timeinterp</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;ux.shape&quot;</span><span class="p">,</span> <span class="n">ux</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;uy.shape&quot;</span><span class="p">,</span> <span class="n">uy</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;uz.shape&quot;</span><span class="p">,</span> <span class="n">uz</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span>
+        <span class="p">]</span>
+       
+
+<div class="viewcode-block" id="Nlink3Dmagn_Solver.print_parameters"><a class="viewcode-back" href="../../../swimmers/nlinks/nlinks3d.html#swimmers.nlinks.nlinks3d.Nlink3Dmagn_Solver.print_parameters">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">print_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Print the parameters of the Nlink3Dmagn solver.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            
+            <span class="c1"># Calculate column widths</span>
+            <span class="n">key_width</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">paramms</span><span class="p">)</span>
+            <span class="n">val_width</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">paramms</span><span class="p">)</span>
+
+            <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot; Parameters for Nlink3Dmagn &quot;</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">title</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">key_width</span> <span class="o">+</span> <span class="n">val_width</span> <span class="o">+</span> <span class="mi">7</span><span class="p">,</span> <span class="s2">&quot;=&quot;</span><span class="p">))</span>
+            <span class="c1"># Header</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;_&quot;</span> <span class="o">*</span> <span class="p">(</span><span class="n">key_width</span> <span class="o">+</span> <span class="n">val_width</span> <span class="o">+</span> <span class="mi">7</span><span class="p">))</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;| </span><span class="si">{</span><span class="s1">&#39;Parameter&#39;</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="n">key_width</span><span class="p">)</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">&#39;Value&#39;</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="n">val_width</span><span class="p">)</span><span class="si">}</span><span class="s2"> |&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="p">(</span><span class="n">key_width</span> <span class="o">+</span> <span class="n">val_width</span> <span class="o">+</span> <span class="mi">7</span><span class="p">))</span>
+
+            <span class="c1"># Rows</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">paramms</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;| </span><span class="si">{</span><span class="n">key</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="n">key_width</span><span class="p">)</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="n">val_width</span><span class="p">)</span><span class="si">}</span><span class="s2"> |&quot;</span><span class="p">)</span>
+
+            <span class="c1"># Footer</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="p">(</span><span class="n">key_width</span> <span class="o">+</span> <span class="n">val_width</span> <span class="o">+</span> <span class="mi">7</span><span class="p">))</span></div>
+
+    
+
+<div class="viewcode-block" id="Nlink3Dmagn_Solver.solve"><a class="viewcode-back" href="../../../swimmers/nlinks/nlinks3d.html#swimmers.nlinks.nlinks3d.Nlink3Dmagn_Solver.solve">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">solve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eng</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Solve the N-link 3D magnetic swimmer dynamics using MATLAB engine.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            eng: MATLAB engine instance.</span>
+<span class="sd">            verbose (bool): Boolean flag to print parameters.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: Time points and state vectors as NumPy arrays.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">print_parameters</span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span>
+        
+        <span class="n">z0</span> <span class="o">=</span> <span class="n">numpy_to_matlab_double</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">z0</span><span class="p">)</span>
+        <span class="n">ux</span> <span class="o">=</span> <span class="n">numpy_to_matlab_double</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ux</span><span class="p">)</span>
+        <span class="n">uy</span> <span class="o">=</span> <span class="n">numpy_to_matlab_double</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uy</span><span class="p">)</span>
+        <span class="n">uz</span> <span class="o">=</span> <span class="n">numpy_to_matlab_double</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uz</span><span class="p">)</span>
+        <span class="n">timeinterp</span> <span class="o">=</span> <span class="n">numpy_to_matlab_double</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeinterp</span><span class="p">)</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">t0</span><span class="p">)</span>
+        <span class="n">tf</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tf</span><span class="p">)</span>
+        <span class="n">N</span> <span class="o">=</span> <span class="n">matlab</span><span class="o">.</span><span class="n">double</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">)</span>
+        <span class="n">tout</span><span class="p">,</span> <span class="n">zout</span> <span class="o">=</span> <span class="n">eng</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">l</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kLT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kLP</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kHT</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kHP</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kHR</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_el</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">M</span><span class="p">,</span> <span class="n">t0</span><span class="p">,</span> <span class="n">tf</span><span class="p">,</span> <span class="n">z0</span><span class="p">,</span> <span class="n">timeinterp</span><span class="p">,</span> <span class="n">ux</span><span class="p">,</span> <span class="n">uy</span><span class="p">,</span> <span class="n">uz</span><span class="p">,</span>  <span class="n">nargout</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zout</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">zout</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tout</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">tout</span><span class="p">)[:,</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zout</span></div>
+    
+
+<div class="viewcode-block" id="Nlink3Dmagn_Solver.interpolate_results"><a class="viewcode-back" href="../../../swimmers/nlinks/nlinks3d.html#swimmers.nlinks.nlinks3d.Nlink3Dmagn_Solver.interpolate_results">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">interpolate_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tout_interp</span><span class="p">)</span> <span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Interpolate the simulation results at specified time points.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tout_interp (np.array): Time points for interpolation.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            tuple: Interpolated time points and state vectors as NumPy arrays.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">tout_interp</span> <span class="o">=</span> <span class="n">tout_interp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zout_interp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">tout_interp</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">zout</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">+</span> <span class="mi">6</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">zout_interp</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">interp1d</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tout</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zout</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span> <span class="n">bounds_error</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fill_value</span><span class="o">=</span><span class="s1">&#39;extrapolate&#39;</span><span class="p">)(</span><span class="n">tout_interp</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tout_interp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zout_interp</span></div></div>
+
+<div class="viewcode-block" id="Nlink3Dmagn_Visualiser"><a class="viewcode-back" href="../../../swimmers/nlinks/nlinks3d.html#swimmers.nlinks.nlinks3d.Nlink3Dmagn_Visualiser">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Nlink3Dmagn_Visualiser</span> <span class="p">:</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nlink3Dmagn_data</span><span class="p">)</span> <span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Visualiser class for N-link 3D magnetic swimmer.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            nlink3Dmagn_data (Nlink3Dmagn_Data): Data object containing swimmer parameters.</span>
+<span class="sd">        &quot;&quot;&quot;</span> 
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">N</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">r</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">l</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">l</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kLT</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">kLT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kLP</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">kLP</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kHT</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">kHT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kHP</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">kHP</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kHR</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">kHR</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k_el</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">k_el</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">M</span> <span class="o">=</span> <span class="n">nlink3Dmagn_data</span><span class="o">.</span><span class="n">M</span>
+    
+<div class="viewcode-block" id="Nlink3Dmagn_Visualiser.plot"><a class="viewcode-back" href="../../../swimmers/nlinks/nlinks3d.html#swimmers.nlinks.nlinks3d.Nlink3Dmagn_Visualiser.plot">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;royalblue&#39;</span><span class="p">):</span> 
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot the N-link 3D magnetic swimmer in 3D space.</span>
+<span class="sd">        state is dimension (2*N+6) where :</span>
+<span class="sd">        - state[0:3] is the position of the head</span>
+<span class="sd">        - state[3:6] is the orientation of the head (theta_x, theta_y, theta_z)</span>
+<span class="sd">        - state[6:6+2*N] is the orientation of the link (phi^1_x, phi^1_y, phi^1_z, ..., phi^N_x, phi^N_y, phi^N_z)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            state (np.array): State vector of the swimmer. </span>
+<span class="sd">            ax (matplotlib.axes._subplots.Axes3DSubplot, optional): Matplotlib 3D axis. Defaults to None.</span>
+<span class="sd">            color (str, optional): Color of the swimmer. Defaults to &#39;royalblue&#39;.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            matplotlib.axes._subplots.Axes3DSubplot: The 3D axis with the swimmer plotted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">e1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">X_head</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">theta_head</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+        <span class="n">phi_links</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">+</span><span class="mi">6</span><span class="p">]</span>
+
+        <span class="n">R_head</span> <span class="o">=</span> <span class="n">rotation_x</span><span class="p">(</span><span class="n">theta_head</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">@</span> <span class="n">rotation_y</span><span class="p">(</span><span class="n">theta_head</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">@</span> <span class="n">rotation_z</span><span class="p">(</span><span class="n">theta_head</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">R_links</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">)</span> <span class="p">:</span>
+            <span class="n">phi_i</span> <span class="o">=</span> <span class="n">phi_links</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">R_links</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">rotation_y</span><span class="p">(</span><span class="n">phi_i</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">@</span> <span class="n">rotation_z</span><span class="p">(</span><span class="n">phi_i</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        
+        <span class="n">X_links</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+        <span class="n">X_links</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">X_head</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="n">R_head</span> <span class="o">@</span> <span class="n">e1</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span> 
+            <span class="n">X_links</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">X_links</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">l</span> <span class="o">*</span> <span class="n">R_head</span> <span class="o">@</span> <span class="n">R_links</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">@</span> <span class="n">e1</span>
+        
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+
+        
+        <span class="c1"># Create sphere mesh</span>
+        <span class="n">phi_head_plot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+        <span class="n">theta_head_plot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+        <span class="n">phi_head_plot</span><span class="p">,</span> <span class="n">theta_head_plot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">phi_head_plot</span><span class="p">,</span> <span class="n">theta_head_plot</span><span class="p">)</span>
+        <span class="n">x_head_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi_head_plot</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">theta_head_plot</span><span class="p">)</span> <span class="o">+</span> <span class="n">X_head</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">y_head_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi_head_plot</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">theta_head_plot</span><span class="p">)</span> <span class="o">+</span> <span class="n">X_head</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">z_head_plot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi_head_plot</span><span class="p">)</span> <span class="o">+</span> <span class="n">X_head</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="c1"># Plotting</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot_surface</span><span class="p">(</span><span class="n">x_head_plot</span><span class="p">,</span> <span class="n">y_head_plot</span><span class="p">,</span> <span class="n">z_head_plot</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X_links</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X_links</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">X_links</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">)</span><span class="c1">#, marker=&#39;o&#39;, markersize=5)</span>
+
+        <span class="k">return</span> <span class="n">ax</span></div></div>
+
+<div class="viewcode-block" id="Nlink3Dmagn_MultipleVisualiser"><a class="viewcode-back" href="../../../swimmers/nlinks/nlinks3d.html#swimmers.nlinks.nlinks3d.Nlink3Dmagn_MultipleVisualiser">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">Nlink3Dmagn_MultipleVisualiser</span><span class="p">(</span><span class="n">Nlink3Dmagn_Visualiser</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_nlink3Dmagn_visualiser</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_nlink3Dmagn_visualiser</span> <span class="o">=</span> <span class="n">list_nlink3Dmagn_visualiser</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb_of_swimmer</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_nlink3Dmagn_visualiser</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Nlink3Dmagn_MultipleVisualiser.multiple_plot"><a class="viewcode-back" href="../../../swimmers/nlinks/nlinks3d.html#swimmers.nlinks.nlinks3d.Nlink3Dmagn_MultipleVisualiser.multiple_plot">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">multiple_plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="p">[]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Plot multiple N-link 3D magnetic swimmers in 3D space.</span>
+<span class="sd">        states is a list of state vectors, each of dimension (2*N+6)</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            states (List[np.array]): List of state vectors of the swimmers. </span>
+<span class="sd">            ax (matplotlib.axes._subplots.Axes3DSubplot, optional): Matplotlib 3D axis. Defaults to None.</span>
+<span class="sd">            colors (list, optional): List of colors for the swimmers. Defaults to [].   </span>
+<span class="sd">        </span>
+<span class="sd">        Returns:</span>
+<span class="sd">            matplotlib.axes._subplots.Axes3DSubplot: The 3D axis with the swimmers plotted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;royalblue&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_of_swimmer</span>
+        
+        <span class="k">if</span> <span class="n">ax</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">states</span><span class="p">):</span>
+            <span class="n">visualiser_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_nlink3Dmagn_visualiser</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">ax</span> <span class="o">=</span> <span class="n">visualiser_i</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">ax</span></div>
+   
+<div class="viewcode-block" id="Nlink3Dmagn_MultipleVisualiser.animate"><a class="viewcode-back" href="../../../swimmers/nlinks/nlinks3d.html#swimmers.nlinks.nlinks3d.Nlink3Dmagn_MultipleVisualiser.animate">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">animate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">ax_lims</span><span class="p">,</span> <span class="n">view_init</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interval</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span> <span class="n">every_frame</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="p">[]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Animate multiple N-link 3D magnetic swimmers in 3D space.</span>
+<span class="sd">        Args:</span>
+<span class="sd">            states (List): List of state vectors of the swimmers.</span>
+<span class="sd">            ax_lims (tuple): Axis limits for the 3D plot.</span>
+<span class="sd">            view_init (tuple): Elevation and azimuthal angles for the 3D view.</span>
+<span class="sd">            path (str, optional): Path to save the animation. Defaults to None.</span>
+<span class="sd">            interval (int, optional): Interval between frames in milliseconds. Defaults to 100.</span>
+<span class="sd">            every_frame (int, optional): Show every nth frame. Defaults to 1.</span>
+<span class="sd">            colors (list, optional): List of colors for the swimmers. Defaults to [].</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            FuncAnimation: The animation object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+      
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">colors</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;royalblue&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_of_swimmer</span>
+
+        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+        <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">,</span> <span class="n">projection</span><span class="o">=</span><span class="s1">&#39;3d&#39;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">ax_lims</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ax_lims</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_zlim</span><span class="p">(</span><span class="n">ax_lims</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="n">elev</span><span class="o">=</span><span class="n">view_init</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">azim</span><span class="o">=</span><span class="n">view_init</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">ax_lims</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">ax_lims</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">set_zlim</span><span class="p">(</span><span class="n">ax_lims</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">view_init</span><span class="p">(</span><span class="n">elev</span><span class="o">=</span><span class="n">view_init</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">azim</span><span class="o">=</span><span class="n">view_init</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">list_states_frame</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="p">[</span><span class="n">frame</span><span class="p">,</span> <span class="p">:]</span> <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">states</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">multiple_plot</span><span class="p">(</span><span class="n">list_states_frame</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ax</span><span class="p">,</span>
+
+        <span class="n">ani</span> <span class="o">=</span> <span class="n">FuncAnimation</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">update</span><span class="p">,</span> <span class="n">frames</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">states</span><span class="p">[</span><span class="mi">0</span><span class="p">])[</span><span class="mi">0</span><span class="p">],</span> <span class="n">every_frame</span><span class="p">),</span> <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">ani</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="o">+</span><span class="s2">&quot;.mp4&quot;</span><span class="p">,</span>  <span class="n">writer</span><span class="o">=</span><span class="s1">&#39;ffmpeg&#39;</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ani</span>  </div></div>
+        
+
+<div class="viewcode-block" id="which_link"><a class="viewcode-back" href="../../../swimmers/nlinks/nlinks3d.html#swimmers.nlinks.nlinks3d.which_link">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">which_link</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">L</span><span class="p">)</span> <span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Determine which link corresponds to the index s.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        s (float): arc length along the links.</span>
+<span class="sd">        N (int): number of links.</span>
+<span class="sd">        L (float): total length the flagellum.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        int: index of the link corresponding to the arc length s.</span>
+<span class="sd">    &quot;&quot;&quot;</span>    
+
+    <span class="k">if</span> <span class="n">s</span><span class="o">==</span><span class="mi">0</span> <span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">else</span> <span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">N</span><span class="o">*</span><span class="n">s</span><span class="o">/</span><span class="n">L</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="kc">None</span><span class="p">,</span> <span class="n">N</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Nlink_to_position"><a class="viewcode-back" href="../../../swimmers/nlinks/nlinks3d.html#swimmers.nlinks.nlinks3d.Nlink_to_position">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">Nlink_to_position</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Compute the position along the N-link swimmer at arc length s.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        state (np.array): State vector of the swimmer.</span>
+<span class="sd">        N (int): Number of links.</span>
+<span class="sd">        L (float): Total length of the flagellum.</span>
+<span class="sd">        r (float): Radius of the head.</span>
+<span class="sd">        s (float): Arc length along the links.  </span>
+<span class="sd">    </span>
+<span class="sd">    Returns:</span>
+<span class="sd">        np.array: Position vector at arc length s.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">l</span> <span class="o">=</span> <span class="n">L</span> <span class="o">/</span> <span class="n">N</span>
+
+
+    <span class="n">X_head</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">theta_head</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span>
+    <span class="n">phi_links</span> <span class="o">=</span> <span class="n">state</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">2</span><span class="o">*</span><span class="n">N</span><span class="o">+</span><span class="mi">6</span><span class="p">]</span>
+    <span class="n">e1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">R_head</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="c1">#rotation_x(theta_head[0]) @ rotation_y(theta_head[1]) @ rotation_z(theta_head[2])</span>
+    <span class="n">R_links</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">)</span> <span class="p">:</span>
+        <span class="n">phi_i</span> <span class="o">=</span> <span class="n">phi_links</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">R_links</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">rotation_y</span><span class="p">(</span><span class="n">phi_i</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">@</span> <span class="n">rotation_z</span><span class="p">(</span><span class="n">phi_i</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    
+    <span class="n">index_link</span> <span class="o">=</span> <span class="n">which_link</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">L</span><span class="p">)</span>
+
+    <span class="n">position</span> <span class="o">=</span> <span class="o">-</span> <span class="n">r</span> <span class="o">*</span> <span class="n">R_head</span> <span class="o">@</span> <span class="n">e1</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">index_link</span><span class="p">)</span> <span class="p">:</span>
+        <span class="n">position</span> <span class="o">-=</span> <span class="n">l</span> <span class="o">*</span> <span class="n">R_head</span> <span class="o">@</span> <span class="n">R_links</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">@</span> <span class="n">e1</span>
+    
+    <span class="n">s_tilde</span> <span class="o">=</span> <span class="n">s</span> <span class="o">-</span> <span class="n">index_link</span> <span class="o">*</span> <span class="n">l</span>
+    <span class="n">position</span> <span class="o">-=</span> <span class="n">s_tilde</span> <span class="o">*</span> <span class="n">R_head</span> <span class="o">@</span> <span class="n">R_links</span><span class="p">[</span><span class="n">index_link</span><span class="p">]</span> <span class="o">@</span> <span class="n">e1</span>
+
+    <span class="k">return</span> <span class="n">position</span></div>
+
+
+
+<div class="viewcode-block" id="Nlink_to_Mlink"><a class="viewcode-back" href="../../../swimmers/nlinks/nlinks3d.html#swimmers.nlinks.nlinks3d.Nlink_to_Mlink">[docs]</a><span class="k">def</span><span class="w"> </span><span class="nf">Nlink_to_Mlink</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">state_Nlink</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span> <span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert N-link swimmer state to M-link swimmer state.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        L (float): Total length of the flagellum.</span>
+<span class="sd">        r (float): Radius of the head.</span>
+<span class="sd">        state_Nlink (np.array): State vector of the N-link swimmer.</span>
+<span class="sd">        N (int): Number of links in the N-link swimmer.</span>
+<span class="sd">        M (int): Number of links in the M-link swimmer.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        np.array: State vector of the M-link swimmer.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">state_Mlink</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">M</span><span class="o">+</span><span class="mi">6</span><span class="p">)</span>
+    <span class="n">state_Mlink</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">state_Nlink</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">])</span>
+    <span class="n">state_Mlink</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">state_Nlink</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span>
+
+    <span class="n">R_head</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="c1">#(rotation_x(state_Nlink[3]) @ rotation_y(state_Nlink[4]) @ rotation_z(state_Nlink[5]))</span>
+    <span class="n">positions_Mlink</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">M</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="n">M</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">L</span><span class="o">*</span><span class="n">i</span><span class="o">/</span><span class="n">M</span>
+        <span class="n">positions_Mlink</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">Nlink_to_position</span><span class="p">(</span><span class="n">state_Nlink</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+    
+    <span class="n">head_junction</span> <span class="o">=</span> <span class="o">-</span> <span class="n">r</span> <span class="o">*</span> <span class="n">R_head</span> <span class="o">@</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+    <span class="n">vectors_Mlink</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">M</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">vectors_Mlink</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">head_junction</span> <span class="o">-</span> <span class="n">positions_Mlink</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span> <span class="p">:</span>
+        <span class="n">vectors_Mlink</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">positions_Mlink</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">positions_Mlink</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">M</span><span class="p">):</span>
+        <span class="n">phi_y</span><span class="p">,</span> <span class="n">phi_z</span> <span class="o">=</span> <span class="n">vector_to_euler_angles</span><span class="p">(</span><span class="n">vectors_Mlink</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">state_Mlink</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">6</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">phi_y</span><span class="p">,</span> <span class="n">phi_z</span><span class="p">])</span>
+    
+    <span class="k">return</span> <span class="n">state_Mlink</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Lucas Palazzolo.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

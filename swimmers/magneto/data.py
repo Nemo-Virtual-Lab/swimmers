@@ -426,16 +426,6 @@ class Magneto2D:
                             {
                                 "coord":"{""" + str(self.center[0]) +""",""" + str(self.center[1]) + """}",
                                 "fields":["displacement","velocity"]
-                            },
-                            "pointB":
-                            {
-                                "coord":"{-0.0077,0.}",
-                                "fields":["displacement","velocity"]
-                            },
-                            "pointC":
-                            {
-                                "coord":"{-0.0076,0.}",
-                                "fields":["displacement","velocity"]
                             }
                         }
                     }

@@ -25,8 +25,8 @@ def get_center_head(measures: pd.DataFrame, init_center: np.array) -> np.array:
         np.array: The center of mass trajectory of the swimmer's head.
     """
 
-    center_mass_0 = measures["Points_pointA_field_displacement_0"].values
-    center_mass_1 = measures["Points_pointA_field_displacement_1"].values
+    center_mass_0 = measures["Quantities_body_fsi-wall.mass_center_0"].values
+    center_mass_1 = measures["Quantities_body_fsi-wall.mass_center_1"].values
     center_mass_array = np.column_stack((center_mass_0, center_mass_1))
     center_mass_array = np.concatenate([init_center[None,:],center_mass_array], axis=0)
     return center_mass_array
@@ -111,7 +111,7 @@ def solve_magneto2D(magneto: Magneto2D, u: Callable, hasContact: bool, env: str)
     
     #return pd.DataFrame(all_dicts)
     print("/!\ Modify to take into account parallelism /!\\")
-    return get_measures(env + "/np_1/solid.measures/values.csv")
+    return get_measures(env + "/np_1/fluid.measures/values.csv")
 
 
 

@@ -5,6 +5,7 @@
 This repository contains implementations of different swimmer models:
 
 * **N-Link** model in MATLAB and Python
+* **Rigid Flagella** model in MATLAB and Python using [Gypsilab](https://github.com/matthieuaussal/gypsilab).
 * **Three-sphere** model in C++ and Python using [Feel++](https://docs.feelpp.org/home/index.html)
 * **Magneto** model in C++ and Python using [Feel++](https://docs.feelpp.org/home/index.html)
 
@@ -27,10 +28,16 @@ cd Swimmers
 pip install -r requirements.txt
 ```
 
-* For the N-Link model, install the MATLAB engine:
+* For the N-Link and rigid flagella model, install the MATLAB engine:
 
 ```bash
 pip install matlabengine
+```
+
+* Clone Gypsilab (required for the rigid flagella model)
+
+```bash
+git clone https://github.com/matthieuaussal/gypsilab.git
 ```
 
 * For the Three-sphere and Magneto models, install Feel++:
@@ -132,6 +139,106 @@ view_init = [30, 30]
 
 #Animation
 ani = multiple_vis.animate([zout_1, zout_2], ax_lims, view_init, interval=10, every_frame=1, colors=['b','r'])
+plt.show()
+
+#end matlab engine
+eng.quit()
+```
+
+---
+
+### Flagellated Rigid Swimmers
+
+```python
+import matlab.engine
+eng = matlab.engine.start_matlab()
+path_matlab_function = "swimmers/flagrigid"
+eng.addpath(path_matlab_function, nargout=0)
+
+import numpy as np
+import matplotlib.pyplot as plt
+from swimmers.flagrigid.flagrigidswimmer import (
+    write_msh_flagellum,
+    get_xF1,
+    get_vertices_oriented_translated_flagellum,
+    FlagRigidSwimmer_Data,
+    FlagRigidSwimmer_Visualiser,
+    FlagRigidSwimmer_Solver
+)
+```
+
+Set up swimmer parameters:
+
+```python
+#Flagella parameters
+N = 100 #Discretization of the flagellum
+L = 3.0 #Length
+rad = 0.2 #Radius
+step_length = 1.0 #Wave length
+height = 1.5 #First estimate of the total height of the flagellum
+rad_section = 0.067 #Radius of the section
+section_type = "circular"
+ke_type = "schum" #or "pt"
+nb_flag = 2 #number of flagella
+
+#Orientations and directions of flagella
+alpha = 0.5*np.pi
+gamma = 0.
+beta = 0.
+delta = 0.
+
+#Head mesh 
+mesh_head = trimesh.load_mesh('swimmers/flagrigid/unitsphere3D.stl')
+
+
+head_parameters = {'mesh' : mesh}
+flagella_parameters = {'N_tail' : N, 
+                        'L_tail' : L, 
+                        'rad_tail' : rad, 
+                        'step_length_tail' : step_length, 
+                        'rad_section_tail' : rad_section, 
+                        'height_tail' : height,
+                        'section_type_tail' : section_type, 
+                        'ke_type_tail' : ke_type,
+                        'nb_flag' : nb_flag}
+angles_parameters = {'alpha' : alpha, 'gamma' : gamma, 'beta' : beta, 'delta' : delta}
+```
+
+
+Create data, and solver objects:
+
+```python
+#Data
+swimmerdata = FlagRigidSwimmer_Data(head_parameters, flagella_parameters, angles_parameters)
+
+#Solver
+solver = FlagRigidSwimmer_Solver(swimmerdata)
+
+#Solve
+A = solver.solve(eng, NT=4.0)
+```
+For visualization of the mesh : 
+
+```python
+#Define path
+filename = ""
+
+#Write mesh of flagellum
+write_msh_flagellum(eng, N, L, rad, step_length, height, rad_section, section_type, ke_type, filename)
+
+#Rotate and translate flagellum
+xF1 = get_xF1(eng, mesh, alpha, beta)
+mesh_tail = trimesh.load_mesh(filename+"mesh_tail.ply")
+vertices_oriented_translated_flagellum = get_vertices_oriented_translated_flagellum(mesh_tail.vertices, gamma, delta, rad_section, xF1, alpha, beta)
+mesh_tail.vertices = vertices_oriented_translated_flagellum
+
+#Add flagellum mesh to data object
+swimmerdata.add_mesh_tail(mesh_tail)
+
+#Plot
+visualiser = FlagRigidSwimmer_Visualiser(swimmerdata)
+ax = visualiser.plot()
+ax.set_aspect('equal')
 plt.show()
 
 #end matlab engine

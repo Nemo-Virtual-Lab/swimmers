@@ -314,7 +314,7 @@ class Magneto2D:
                             "required_markers":["fsi-wall","Solid","Head"],
                             "events":{
                                 "each_time_step":{
-                                    "frequency":20
+                                    "frequency":10
                                 }
                             }
                         }],
